@@ -1,1 +1,324 @@
-<h1>teste</h1>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Comunicar Emoções — Aprender a Expressar Sentimentos</title>
+  <meta name="description" content="Site simples e acessível para ajudar pessoas autistas a comunicar suas emoções." />
+  <!-- Manifest (salvar como manifest.json no mesmo diretório) -->
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root{
+      --bg:#f7fbff; --card:#ffffff; --accent:#2b7cff; --muted:#6b7280;
+      --success:#10b981; --danger:#ef4444; --radius:16px; --gap:14px;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    html,body{height:100%; margin:0; background:var(--bg); color:#0f172a}
+    .app{max-width:900px; margin:20px auto; padding:18px;}
+    header{display:flex; align-items:center; gap:12px}
+    h1{font-size:1.6rem; margin:0}
+    p.lead{margin:6px 0 18px; color:var(--muted)}
+
+    .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px}
+    .card{background:var(--card); border-radius:var(--radius); padding:12px; box-shadow:0 6px 18px rgba(11,20,50,0.06); display:flex; flex-direction:column; gap:10px; align-items:center}
+    .emotion-btn{width:100%; padding:12px; border-radius:12px; border:2px solid transparent; font-size:1rem; display:flex; gap:10px; align-items:center; justify-content:center; cursor:pointer}
+    .emotion-emoji{font-size:1.6rem}
+    .controls{display:flex; gap:8px; flex-wrap:wrap}
+    .btn{padding:10px 14px; border-radius:10px; background:var(--accent); color:#fff; border:0; cursor:pointer}
+    .btn.secondary{background:transparent; border:1px solid #cbd5e1; color:var(--muted)}
+    .small{font-size:0.9rem; padding:8px 10px}
+
+    form{display:flex; gap:8px; width:100%}
+    input[type=text]{flex:1; padding:10px; border-radius:10px; border:1px solid #e2e8f0}
+
+    .history{max-height:220px; overflow:auto; padding:8px; width:100%; border-radius:12px; background:#f1f5f9}
+    .item{padding:8px; border-radius:10px; display:flex; justify-content:space-between; gap:8px}
+    .item .meta{color:var(--muted); font-size:0.9rem}
+    footer{margin-top:18px; color:var(--muted); font-size:0.85rem}
+
+    /* Focus visible for keyboard users */
+    :focus{outline:3px solid rgba(43,124,255,0.15); outline-offset:2px}
+
+    @media (max-width:420px){ h1{font-size:1.2rem} }
+  </style>
+</head>
+<body>
+  <main class="app" role="main">
+    <header>
+      <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="0" y="0" width="24" height="24" rx="6" fill="#2b7cff" />
+        <path d="M7 12h10M7 16h6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <h1>Comunicar Emoções</h1>
+        <p class="lead">Ajude-se a identificar e falar sobre emoções — simples, visual e seguro.</p>
+      </div>
+    </header>
+
+    <!-- Emotions grid -->
+    <section aria-labelledby="title-emotions">
+      <h2 id="title-emotions" style="font-size:1rem;margin:12px 0 6px">Escolha uma emoção</h2>
+      <div class="grid" id="emotionsGrid" aria-live="polite">
+        <!-- botões gerados por JS -->
+      </div>
+    </section>
+
+    <!-- Compose sentence + controls -->
+    <section style="margin-top:12px">
+      <div class="card">
+        <div style="width:100%">
+          <label for="reason" class="small">Por que você está sentindo isso? (opcional)</label>
+          <input id="reason" type="text" placeholder="Ex.: Estava muito barulho na sala" aria-label="Motivo" />
+        </div>
+        <div class="controls" style="width:100%">
+          <button class="btn" id="speakBtn">Falar em voz alta</button>
+          <button class="btn secondary small" id="saveBtn">Salvar</button>
+          <button class="btn secondary small" id="exportBtn">Exportar</button>
+        </div>
+        <div style="width:100%; margin-top:8px">
+          <strong>Frase gerada</strong>
+          <div id="generated" style="padding:10px; border-radius:8px; background:#f8fafc; margin-top:6px; min-height:44px"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section style="margin-top:14px">
+      <h3 style="margin:6px 0">Histórico</h3>
+      <div class="history" id="history" aria-live="polite">
+        <!-- histórico salvo -->
+      </div>
+    </section>
+
+    <!-- Add custom emotion -->
+    <section style="margin-top:14px">
+      <h3 style="margin:6px 0">Adicionar emoção</h3>
+      <form id="addForm">
+        <input id="newEmoji" type="text" maxlength="2" placeholder="Emoji (ex: 😊)" aria-label="Emoji" required />
+        <input id="newLabel" type="text" placeholder="Nome da emoção (ex: feliz)" aria-label="Nome da emoção" required />
+        <button class="btn small" type="submit">Adicionar</button>
+      </form>
+    </section>
+
+    <footer>
+      <p>Design pensado para clareza: botões grandes, contraste e textos curtos. Não substitui apoio profissional.</p>
+    </footer>
+  </main>
+
+  <script>
+    // --- Dados iniciais de emoções ---
+    const defaultEmotions = [
+      {emoji: '😊', label:'Feliz'},
+      {emoji: '😢', label:'Triste'},
+      {emoji: '😠', label:'Bravo'},
+      {emoji: '😰', label:'Ansioso'},
+      {emoji: '😐', label:'Neutro'},
+      {emoji: '😮', label:'Surpreso'},
+      {emoji: '😴', label:'Cansado'},
+      {emoji: '😇', label:'Calmo'}
+    ];
+
+    // --- Estado ---
+    let emotions = load('emotions') || defaultEmotions;
+    let selected = null;
+    let history = load('history') || [];
+
+    const grid = document.getElementById('emotionsGrid');
+    const generated = document.getElementById('generated');
+    const historyEl = document.getElementById('history');
+    const reasonInput = document.getElementById('reason');
+
+    function save(key, value){ localStorage.setItem('comunicar:'+key, JSON.stringify(value)); }
+    function load(key){ try{ return JSON.parse(localStorage.getItem('comunicar:'+key)); }catch(e){return null} }
+
+    // Render emotion buttons
+    function renderEmotions(){
+      grid.innerHTML='';
+      emotions.forEach((e,idx)=>{
+        const card = document.createElement('div'); card.className='card';
+        const btn = document.createElement('button'); btn.className='emotion-btn';
+        btn.setAttribute('aria-pressed','false'); btn.setAttribute('data-idx',idx);
+        btn.innerHTML = `<span class="emotion-emoji">${e.emoji}</span> <span style="font-weight:600">${e.label}</span>`;
+        btn.addEventListener('click',()=>selectEmotion(idx));
+        btn.addEventListener('keydown',(ev)=>{ if(ev.key==='Enter' || ev.key===' ') { ev.preventDefault(); selectEmotion(idx);} });
+        card.appendChild(btn);
+        grid.appendChild(card);
+      });
+    }
+
+    function selectEmotion(idx){
+      selected = emotions[idx];
+      // mark pressed
+      document.querySelectorAll('.emotion-btn').forEach((b,i)=>{
+        b.setAttribute('aria-pressed', i===idx ? 'true':'false');
+      });
+      updateGenerated();
+      // announce via speech (gentle)
+      speak(`Selecionado ${selected.label}`);
+    }
+
+    function updateGenerated(){
+      const reason = reasonInput.value.trim();
+      if(!selected){ generated.textContent = 'Escolha uma emoção acima.'; return; }
+      const sentence = reason ? `Estou me sentindo ${selected.label} ${selected.emoji} porque ${reason}.` : `Estou me sentindo ${selected.label} ${selected.emoji}.`;
+      generated.textContent = sentence;
+    }
+
+    // Speech synthesis (simple, user-configurable volumes are not exposed for safety)
+    function speak(text){
+      if(!window.speechSynthesis) return;
+      const ut = new SpeechSynthesisUtterance(text);
+      ut.lang = 'pt-BR';
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(ut);
+    }
+
+    // Save to history
+    function saveEntry(){
+      if(!selected) return alert('Escolha uma emoção antes de salvar.');
+      const reason = reasonInput.value.trim();
+      const entry = {emoji:selected.emoji, label:selected.label, reason, time: new Date().toISOString()};
+      history.unshift(entry);
+      history = history.slice(0,200); // limitar
+      save('history', history);
+      renderHistory();
+      // feedback
+      speak(`Registro salvo: ${entry.label}`);
+    }
+
+    function renderHistory(){
+      historyEl.innerHTML='';
+      if(history.length===0){ historyEl.textContent='Nenhum registro salvo ainda.'; return; }
+      history.forEach((h, i)=>{
+        const div = document.createElement('div'); div.className='item';
+        const left = document.createElement('div');
+        left.innerHTML = `<div style="font-weight:600">${h.emoji} ${h.label}</div><div class="meta">${h.reason || ''}</div>`;
+        const right = document.createElement('div');
+        const time = new Date(h.time).toLocaleString('pt-BR');
+        right.innerHTML = `<div class="meta">${time}</div><div style="margin-top:6px" class="controls"><button class="btn small" data-i="${i}">Reouvir</button> <button class="btn secondary small" data-delete="${i}">Apagar</button></div>`;
+        div.appendChild(left); div.appendChild(right);
+        historyEl.appendChild(div);
+      });
+
+      // attach listeners for history buttons
+      historyEl.querySelectorAll('button[data-i]').forEach(b=>{
+        b.addEventListener('click',()=>{
+          const i = Number(b.getAttribute('data-i'));
+          const h = history[i];
+          const s = `Registro: estou me sentindo ${h.label} porque ${h.reason || 'não informado'}`;
+          speak(s);
+        });
+      });
+      historyEl.querySelectorAll('button[data-delete]').forEach(b=>{
+        b.addEventListener('click',()=>{
+          const i = Number(b.getAttribute('data-delete'));
+          history.splice(i,1); save('history',history); renderHistory();
+        });
+      });
+    }
+
+    // Export JSON
+    function exportData(){
+      const blob = new Blob([JSON.stringify({history, emotions}, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download = 'comunicar_emocoes.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    // Add new emotion
+    document.getElementById('addForm').addEventListener('submit',(ev)=>{
+      ev.preventDefault();
+      const emoji = document.getElementById('newEmoji').value.trim() || '💬';
+      const label = document.getElementById('newLabel').value.trim() || 'Nova';
+      emotions.push({emoji, label});
+      save('emotions', emotions);
+      renderEmotions();
+      ev.target.reset();
+    });
+
+    // Events
+    document.getElementById('speakBtn').addEventListener('click', ()=>{ updateGenerated(); speak(generated.textContent); });
+    document.getElementById('saveBtn').addEventListener('click', saveEntry);
+    document.getElementById('exportBtn').addEventListener('click', exportData);
+    reasonInput.addEventListener('input', updateGenerated);
+
+    // Init
+    renderEmotions(); updateGenerated(); renderHistory();
+
+    // --- PWA: tenta registrar service worker ---
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('/sw.js')
+        .then(()=>console.log('Service worker registrado'))
+        .catch((e)=>console.log('SW registro falhou', e));
+    }
+
+    // Accessibility: keyboard shortcut to focus reason input (R) and to speak (S)
+    document.addEventListener('keydown', (e)=>{
+      if(e.key==='r' || e.key==='R'){ reasonInput.focus(); }
+      if(e.key==='s' || e.key==='S'){ e.preventDefault(); speak(generated.textContent); }
+    });
+
+    // Warn about storage size politely
+    window.addEventListener('storage', ()=>{/* could sync across tabs */});
+  </script>
+
+  <!--
+    ==========================
+    MANIFEST (manifest.json)
+    Save this JSON as manifest.json next to the index.html file.
+    ==========================
+
+    {
+      "name": "Comunicar Emoções",
+      "short_name": "Emoções",
+      "start_url": "/",
+      "display": "standalone",
+      "background_color": "#f7fbff",
+      "theme_color": "#2b7cff",
+      "icons": [
+        { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+        { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+      ]
+    }
+
+    ==========================
+    SERVICE WORKER (sw.js)
+    Save this JS as sw.js at the site root. For production, customize caching rules.
+    ==========================
+
+    const CACHE_NAME = 'comunicar-v1';
+    const FILES_TO_CACHE = [
+      '/', '/index.html', '/manifest.json'
+      // adicione os recursos essenciais (CSS, ícones) aqui
+    ];
+
+    self.addEventListener('install', (evt) => {
+      evt.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
+      );
+      self.skipWaiting();
+    });
+
+    self.addEventListener('activate', (evt) => {
+      evt.waitUntil(
+        caches.keys().then((keys) => Promise.all(
+          keys.map((k) => { if(k !== CACHE_NAME) return caches.delete(k); })
+        ))
+      );
+      self.clients.claim();
+    });
+
+    self.addEventListener('fetch', (evt) => {
+      if(evt.request.method !== 'GET') return;
+      evt.respondWith(
+        caches.match(evt.request).then((res) => res || fetch(evt.request))
+      );
+    });
+
+    Notes:
+    - To enable PWA install prompt, host the files on HTTPS (or localhost).
+    - Provide icons at the paths defined in manifest.json.
+    - Test with Chrome/Edge devtools (Application > Manifest/Service Workers).
+
+  -->
+</body>
+</html>
