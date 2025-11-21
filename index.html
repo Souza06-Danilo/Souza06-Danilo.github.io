@@ -1,324 +1,755 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Comunicar Emoções — Aprender a Expressar Sentimentos</title>
-  <meta name="description" content="Site simples e acessível para ajudar pessoas autistas a comunicar suas emoções." />
-  <!-- Manifest (salvar como manifest.json no mesmo diretório) -->
-  <link rel="manifest" href="manifest.json">
-  <style>
-    :root{
-      --bg:#f7fbff; --card:#ffffff; --accent:#2b7cff; --muted:#6b7280;
-      --success:#10b981; --danger:#ef4444; --radius:16px; --gap:14px;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    }
-    html,body{height:100%; margin:0; background:var(--bg); color:#0f172a}
-    .app{max-width:900px; margin:20px auto; padding:18px;}
-    header{display:flex; align-items:center; gap:12px}
-    h1{font-size:1.6rem; margin:0}
-    p.lead{margin:6px 0 18px; color:var(--muted)}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#87CEEB" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="Mundo Colorido - App de comunicação e emoções para autismo" />
+    
+    <title>Mundo Colorido</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/4150/4150367.png" />
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4150/4150367.png" />
 
-    .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px}
-    .card{background:var(--card); border-radius:var(--radius); padding:12px; box-shadow:0 6px 18px rgba(11,20,50,0.06); display:flex; flex-direction:column; gap:10px; align-items:center}
-    .emotion-btn{width:100%; padding:12px; border-radius:12px; border:2px solid transparent; font-size:1rem; display:flex; gap:10px; align-items:center; justify-content:center; cursor:pointer}
-    .emotion-emoji{font-size:1.6rem}
-    .controls{display:flex; gap:8px; flex-wrap:wrap}
-    .btn{padding:10px 14px; border-radius:10px; background:var(--accent); color:#fff; border:0; cursor:pointer}
-    .btn.secondary{background:transparent; border:1px solid #cbd5e1; color:var(--muted)}
-    .small{font-size:0.9rem; padding:8px 10px}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Lilita+One&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #87CEEB;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='skyGradient' x1='0.5' y1='0' x2='0.5' y2='1'%3E%3Cstop offset='0%25' stop-color='%2387CEEB' /%3E%3Cstop offset='100%25' stop-color='%23B0E0E6' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23skyGradient)' /%3E%3Ccircle cx='1750' cy='170' r='120' fill='%23FFD700' opacity='0.9'/%3E%3Cg opacity='0.9'%3E%3Ccircle cx='500' cy='250' r='80' fill='white'/%3E%3Ccircle cx='590' cy='280' r='90' fill='white'/%3E%3Ccircle cx='410' cy='280' r='70' fill='white'/%3E%3Ccircle cx='1200' cy='350' r='100' fill='white'/%3E%3Ccircle cx='1300' cy='380' r='110' fill='white'/%3E%3Ccircle cx='1100' cy='380' r='90' fill='white'/%3E%3Ccircle cx='1600' cy='230' r='60' fill='white'/%3E%3Ccircle cx='1660' cy='250' r='70' fill='white'/%3E%3C/g%3E%3Cpath d='M-10 1080 L-10 800 Q 480 600, 960 850 T 1930 750 L 1930 1080 Z' fill='%2398FB98' /%3E%3Cpath d='M-10 1080 L-10 900 Q 320 750, 640 920 T 1280 850 T 1930 950 L 1930 1080 Z' fill='%233CB371' /%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            overscroll-behavior: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .font-lilita { font-family: 'Lilita One', cursive; }
+        .title-stroked {
+            -webkit-text-stroke: 4px #4A4A4A;
+            text-shadow: 6px 6px 0px rgba(0,0,0,0.15);
+        }
+        .subtitle-stroked {
+            -webkit-text-stroke: 2px #4A4A4A;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+        }
+        @media (min-width: 768px) {
+            .title-stroked {
+                -webkit-text-stroke: 6px #4A4A4A;
+            }
+        }
 
-    form{display:flex; gap:8px; width:100%}
-    input[type=text]{flex:1; padding:10px; border-radius:10px; border:1px solid #e2e8f0}
+        /* Animations */
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100%) rotateZ(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; }
+        }
+        .confetti {
+            position: absolute; width: 12px; height: 12px;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: confetti-fall 3s linear infinite;
+            z-index: 50;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.9); } 50% { transform: scale(1.05); } 100% { transform: scale(1); }
+        }
+        .animate-pop { animation: pop 0.3s ease-out; }
+        @keyframes pop-in {
+            0% { transform: scale(0.8); opacity: 0; }
+            80% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .animate-pop-in { animation: pop-in 0.4s ease-out forwards; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); }
+        }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2); }
+            50% { transform: scale(1.03); box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0); }
+        }
+        .animate-pulse-quick { animation: pulse 1.5s ease-in-out infinite; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes tada {
+            from { transform: scale3d(1, 1, 1); }
+            10%, 20% { transform: scale3d(.95, .95, .95) rotate3d(0, 0, 1, -3deg); }
+            30%, 50%, 70%, 90% { transform: scale3d(1.05, 1.05, 1.05) rotate3d(0, 0, 1, 3deg); }
+            40%, 60%, 80% { transform: scale3d(1.05, 1.05, 1.05) rotate3d(0, 0, 1, -3deg); }
+            to { transform: scale3d(1, 1, 1); }
+        }
+        .animate-tada { animation: tada 1s; }
 
-    .history{max-height:220px; overflow:auto; padding:8px; width:100%; border-radius:12px; background:#f1f5f9}
-    .item{padding:8px; border-radius:10px; display:flex; justify-content:space-between; gap:8px}
-    .item .meta{color:var(--muted); font-size:0.9rem}
-    footer{margin-top:18px; color:var(--muted); font-size:0.85rem}
-
-    /* Focus visible for keyboard users */
-    :focus{outline:3px solid rgba(43,124,255,0.15); outline-offset:2px}
-
-    @media (max-width:420px){ h1{font-size:1.2rem} }
-  </style>
+        /* 3D Button Styles */
+        .perspective-container {
+            perspective: 800px;
+        }
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        .btn-3d::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0));
+            border-radius: 1rem; 
+            transform: translateZ(25px);
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+        .perspective-container:hover .btn-3d {
+            transform: rotateY(-10deg) rotateX(10deg) scale(1.05);
+            box-shadow: 10px 15px 30px rgba(0,0,0,0.2);
+        }
+        .perspective-container:hover .btn-3d::before {
+            opacity: 1;
+        }
+        .btn-3d-icon, .btn-3d-text {
+            transform: translateZ(50px);
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.15);
+        }
+        .btn-3d:active {
+            transform: rotateY(0) rotateX(0) scale(0.95) !important;
+            transition: transform 0.1s ease;
+        }
+        
+        /* Loading Spinner */
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #87CEEB; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .loader {
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 8px solid #fff;
+            width: 60px; height: 60px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
-  <main class="app" role="main">
-    <header>
-      <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true">
-        <rect x="0" y="0" width="24" height="24" rx="6" fill="#2b7cff" />
-        <path d="M7 12h10M7 16h6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <div>
-        <h1>Comunicar Emoções</h1>
-        <p class="lead">Ajude-se a identificar e falar sobre emoções — simples, visual e seguro.</p>
-      </div>
-    </header>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="loader"></div>
+        <h2 class="font-lilita text-2xl text-white tracking-wider">Carregando o Mundo Colorido...</h2>
+    </div>
 
-    <!-- Emotions grid -->
-    <section aria-labelledby="title-emotions">
-      <h2 id="title-emotions" style="font-size:1rem;margin:12px 0 6px">Escolha uma emoção</h2>
-      <div class="grid" id="emotionsGrid" aria-live="polite">
-        <!-- botões gerados por JS -->
-      </div>
-    </section>
+    <!-- App Root -->
+    <div id="app-container" class="min-h-screen w-full flex flex-col items-center text-gray-800"></div>
 
-    <!-- Compose sentence + controls -->
-    <section style="margin-top:12px">
-      <div class="card">
-        <div style="width:100%">
-          <label for="reason" class="small">Por que você está sentindo isso? (opcional)</label>
-          <input id="reason" type="text" placeholder="Ex.: Estava muito barulho na sala" aria-label="Motivo" />
-        </div>
-        <div class="controls" style="width:100%">
-          <button class="btn" id="speakBtn">Falar em voz alta</button>
-          <button class="btn secondary small" id="saveBtn">Salvar</button>
-          <button class="btn secondary small" id="exportBtn">Exportar</button>
-        </div>
-        <div style="width:100%; margin-top:8px">
-          <strong>Frase gerada</strong>
-          <div id="generated" style="padding:10px; border-radius:8px; background:#f8fafc; margin-top:6px; min-height:44px"></div>
-        </div>
-      </div>
-    </section>
+    <script>
+        /**
+         * CONFIGURAÇÃO & DADOS
+         */
+        const API_KEY = "AIzaSyCShU4DBkhKMxpG5fCGM9kFHUf0A_vaFnY";
 
-    <!-- History -->
-    <section style="margin-top:14px">
-      <h3 style="margin:6px 0">Histórico</h3>
-      <div class="history" id="history" aria-live="polite">
-        <!-- histórico salvo -->
-      </div>
-    </section>
+        const PICTOGRAMS = {
+            "Sentimentos": [
+                {id: "feliz", label: "Feliz", emoji: "😊", color: "bg-yellow-100 border-yellow-400"},
+                {id: "triste", label: "Triste", emoji: "😢", color: "bg-blue-100 border-blue-400"},
+                {id: "bravo", label: "Bravo", emoji: "😠", color: "bg-red-100 border-red-400"},
+                {id: "cansado", label: "Cansado", emoji: "😴", color: "bg-purple-100 border-purple-400"},
+                {id: "amor", label: "Amor", emoji: "❤️", color: "bg-pink-100 border-pink-400"},
+            ],
+            "Ações": [
+                {id: "quero", label: "Eu quero", emoji: "🤲", color: "bg-green-100 border-green-400"},
+                {id: "nao_quero", label: "Não quero", emoji: "🙅", color: "bg-red-100 border-red-400"},
+                {id: "comer", label: "Comer", emoji: "🍽️", color: "bg-orange-100 border-orange-400"},
+                {id: "beber", label: "Beber", emoji: "🥤", color: "bg-blue-100 border-blue-400"},
+                {id: "brincar", label: "Brincar", emoji: "🧸", color: "bg-yellow-100 border-yellow-400"},
+                {id: "dormir", label: "Dormir", emoji: "🛌", color: "bg-indigo-100 border-indigo-400"},
+                {id: "ir", label: "Ir", emoji: "🚶", color: "bg-green-100 border-green-400"},
+            ],
+            "Comida": [
+                {id: "agua", label: "Água", emoji: "💧", color: "bg-blue-100 border-blue-400"},
+                {id: "maca", label: "Maçã", emoji: "🍎", color: "bg-red-100 border-red-400"},
+                {id: "banana", label: "Banana", emoji: "🍌", color: "bg-yellow-100 border-yellow-400"},
+                {id: "biscoito", label: "Biscoito", emoji: "🍪", color: "bg-orange-100 border-orange-400"},
+                {id: "leite", label: "Leite", emoji: "🥛", color: "bg-gray-100 border-gray-400"},
+            ],
+            "Lugares": [
+                {id: "casa", label: "Casa", emoji: "🏠", color: "bg-green-100 border-green-400"},
+                {id: "escola", label: "Escola", emoji: "🏫", color: "bg-yellow-100 border-yellow-400"},
+                {id: "parque", label: "Parque", emoji: "⛲", color: "bg-green-100 border-green-400"},
+                {id: "banheiro", label: "Banheiro", emoji: "🚽", color: "bg-blue-100 border-blue-400"},
+            ],
+            "Animais": [
+                {id: "cachorro", label: "Cachorro", emoji: "🐶", color: "bg-orange-100 border-orange-400"},
+                {id: "gato", label: "Gato", emoji: "🐱", color: "bg-gray-100 border-gray-400"},
+            ]
+        };
 
-    <!-- Add custom emotion -->
-    <section style="margin-top:14px">
-      <h3 style="margin:6px 0">Adicionar emoção</h3>
-      <form id="addForm">
-        <input id="newEmoji" type="text" maxlength="2" placeholder="Emoji (ex: 😊)" aria-label="Emoji" required />
-        <input id="newLabel" type="text" placeholder="Nome da emoção (ex: feliz)" aria-label="Nome da emoção" required />
-        <button class="btn small" type="submit">Adicionar</button>
-      </form>
-    </section>
+        const EMOTION_LEVELS = [
+            {id: 1, target: "Feliz", emoji: "😊", distractors: ["😢", "😠", "😴"]},
+            {id: 2, target: "Triste", emoji: "😢", distractors: ["😊", "😂", "😠"]},
+            {id: 3, target: "Bravo", emoji: "😠", distractors: ["😊", "😴", "😮"]},
+            {id: 4, target: "Surpreso", emoji: "😮", distractors: ["😠", "😢", "😴"]},
+            {id: 5, target: "Amor", emoji: "😍", distractors: ["😢", "😠", "🤮"]},
+        ];
 
-    <footer>
-      <p>Design pensado para clareza: botões grandes, contraste e textos curtos. Não substitui apoio profissional.</p>
-    </footer>
-  </main>
+        /**
+         * UTILITÁRIOS
+         */
 
-  <script>
-    // --- Dados iniciais de emoções ---
-    const defaultEmotions = [
-      {emoji: '😊', label:'Feliz'},
-      {emoji: '😢', label:'Triste'},
-      {emoji: '😠', label:'Bravo'},
-      {emoji: '😰', label:'Ansioso'},
-      {emoji: '😐', label:'Neutro'},
-      {emoji: '😮', label:'Surpreso'},
-      {emoji: '😴', label:'Cansado'},
-      {emoji: '😇', label:'Calmo'}
-    ];
+        // Função Helper para criar elementos DOM
+        function el(tag, className = "", props = {}, children = []) {
+            const element = document.createElement(tag);
+            if (className) element.className = className;
+            
+            for (const [key, value] of Object.entries(props)) {
+                if (key === 'text') {
+                    element.innerText = value;
+                } else if (key === 'style') {
+                    element.setAttribute('style', value);
+                } else if (key.startsWith('on') && typeof value === 'function') {
+                    // ex: onclick -> click
+                    element.addEventListener(key.substring(2).toLowerCase(), value);
+                } else {
+                    element.setAttribute(key, value);
+                }
+            }
 
-    // --- Estado ---
-    let emotions = load('emotions') || defaultEmotions;
-    let selected = null;
-    let history = load('history') || [];
+            if (Array.isArray(children)) {
+                children.forEach(child => {
+                    if (child) element.appendChild(child);
+                });
+            } else if (children instanceof HTMLElement) {
+                element.appendChild(children);
+            }
 
-    const grid = document.getElementById('emotionsGrid');
-    const generated = document.getElementById('generated');
-    const historyEl = document.getElementById('history');
-    const reasonInput = document.getElementById('reason');
+            return element;
+        }
 
-    function save(key, value){ localStorage.setItem('comunicar:'+key, JSON.stringify(value)); }
-    function load(key){ try{ return JSON.parse(localStorage.getItem('comunicar:'+key)); }catch(e){return null} }
+        class SoundUtils {
+            static get context() {
+                if (!this._context) {
+                    this._context = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                return this._context;
+            }
 
-    // Render emotion buttons
-    function renderEmotions(){
-      grid.innerHTML='';
-      emotions.forEach((e,idx)=>{
-        const card = document.createElement('div'); card.className='card';
-        const btn = document.createElement('button'); btn.className='emotion-btn';
-        btn.setAttribute('aria-pressed','false'); btn.setAttribute('data-idx',idx);
-        btn.innerHTML = `<span class="emotion-emoji">${e.emoji}</span> <span style="font-weight:600">${e.label}</span>`;
-        btn.addEventListener('click',()=>selectEmotion(idx));
-        btn.addEventListener('keydown',(ev)=>{ if(ev.key==='Enter' || ev.key===' ') { ev.preventDefault(); selectEmotion(idx);} });
-        card.appendChild(btn);
-        grid.appendChild(card);
-      });
-    }
+            static playTone(type, frequency, duration, volume = 0.5, startTime = 0) {
+                const ctx = this.context;
+                if (ctx.state === 'suspended') ctx.resume();
 
-    function selectEmotion(idx){
-      selected = emotions[idx];
-      // mark pressed
-      document.querySelectorAll('.emotion-btn').forEach((b,i)=>{
-        b.setAttribute('aria-pressed', i===idx ? 'true':'false');
-      });
-      updateGenerated();
-      // announce via speech (gentle)
-      speak(`Selecionado ${selected.label}`);
-    }
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
 
-    function updateGenerated(){
-      const reason = reasonInput.value.trim();
-      if(!selected){ generated.textContent = 'Escolha uma emoção acima.'; return; }
-      const sentence = reason ? `Estou me sentindo ${selected.label} ${selected.emoji} porque ${reason}.` : `Estou me sentindo ${selected.label} ${selected.emoji}.`;
-      generated.textContent = sentence;
-    }
+                osc.type = type;
+                osc.frequency.setValueAtTime(frequency, ctx.currentTime + startTime);
+                
+                gain.gain.setValueAtTime(volume, ctx.currentTime + startTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + startTime + duration);
 
-    // Speech synthesis (simple, user-configurable volumes are not exposed for safety)
-    function speak(text){
-      if(!window.speechSynthesis) return;
-      const ut = new SpeechSynthesisUtterance(text);
-      ut.lang = 'pt-BR';
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(ut);
-    }
+                osc.connect(gain);
+                gain.connect(ctx.destination);
 
-    // Save to history
-    function saveEntry(){
-      if(!selected) return alert('Escolha uma emoção antes de salvar.');
-      const reason = reasonInput.value.trim();
-      const entry = {emoji:selected.emoji, label:selected.label, reason, time: new Date().toISOString()};
-      history.unshift(entry);
-      history = history.slice(0,200); // limitar
-      save('history', history);
-      renderHistory();
-      // feedback
-      speak(`Registro salvo: ${entry.label}`);
-    }
+                osc.start(ctx.currentTime + startTime);
+                osc.stop(ctx.currentTime + startTime + duration);
+            }
 
-    function renderHistory(){
-      historyEl.innerHTML='';
-      if(history.length===0){ historyEl.textContent='Nenhum registro salvo ainda.'; return; }
-      history.forEach((h, i)=>{
-        const div = document.createElement('div'); div.className='item';
-        const left = document.createElement('div');
-        left.innerHTML = `<div style="font-weight:600">${h.emoji} ${h.label}</div><div class="meta">${h.reason || ''}</div>`;
-        const right = document.createElement('div');
-        const time = new Date(h.time).toLocaleString('pt-BR');
-        right.innerHTML = `<div class="meta">${time}</div><div style="margin-top:6px" class="controls"><button class="btn small" data-i="${i}">Reouvir</button> <button class="btn secondary small" data-delete="${i}">Apagar</button></div>`;
-        div.appendChild(left); div.appendChild(right);
-        historyEl.appendChild(div);
-      });
+            static playPop() { this.playTone('sine', 440, 0.1, 0.3); }
+            static playClear() { 
+                this.playTone('triangle', 300, 0.2, 0.2); 
+                this.playTone('triangle', 200, 0.2, 0.2, 0.1);
+            }
+            static playCorrect() {
+                this.playTone('sine', 523.25, 0.15, 0.4);
+                this.playTone('sine', 659.25, 0.2, 0.4, 0.15);
+            }
+            static playIncorrect() { this.playTone('sawtooth', 220, 0.2, 0.2); }
+            static playSuccess() {
+                const now = 0;
+                this.playTone('sine', 523.25, 0.1, 0.3, now);
+                this.playTone('sine', 659.25, 0.1, 0.3, now + 0.1);
+                this.playTone('sine', 783.99, 0.1, 0.3, now + 0.2);
+                this.playTone('sine', 1046.50, 0.2, 0.4, now + 0.3);
+            }
 
-      // attach listeners for history buttons
-      historyEl.querySelectorAll('button[data-i]').forEach(b=>{
-        b.addEventListener('click',()=>{
-          const i = Number(b.getAttribute('data-i'));
-          const h = history[i];
-          const s = `Registro: estou me sentindo ${h.label} porque ${h.reason || 'não informado'}`;
-          speak(s);
+            static speak(text) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = "pt-BR";
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1.1;
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+        }
+
+        /**
+         * COMPONENTES DA APLICAÇÃO
+         */
+
+        class App {
+            constructor(root) {
+                this.root = root;
+                this.view = "HOME";
+                this.mainArea = null;
+                this.init();
+            }
+
+            init() {
+                // Remove Loading Screen
+                const loader = document.getElementById('loading-overlay');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 500);
+                }
+
+                // Structure
+                this.root.innerHTML = '';
+                this.root.appendChild(this.renderHeader());
+                
+                this.mainArea = el('main', 'w-full flex-grow flex flex-col items-center justify-center p-4 md:p-6');
+                this.root.appendChild(this.mainArea);
+                
+                this.root.appendChild(this.renderFooter());
+
+                this.renderView();
+            }
+
+            setView(viewName) {
+                this.view = viewName;
+                this.renderView();
+            }
+
+            renderHeader() {
+                const title = el('h1', 
+                    'font-lilita text-5xl md:text-8xl tracking-wider text-white cursor-pointer select-none transition-transform hover:scale-105 active:scale-100 title-stroked', 
+                    { 
+                        text: 'MUNDO COLORIDO',
+                        onClick: (e) => {
+                            e.currentTarget.classList.add('animate-pop');
+                            setTimeout(() => e.currentTarget.classList.remove('animate-pop'), 300);
+                            this.setView('HOME');
+                        }
+                    }
+                );
+                return el('header', 'w-full p-4 flex justify-center items-center relative', {}, [title]);
+            }
+
+            renderFooter() {
+                return el('footer', 'w-full text-center p-4 text-sm text-gray-700 font-semibold', {}, [
+                    el('p', '', { text: 'Criado com ❤️ para o desenvolvimento infantil.' })
+                ]);
+            }
+
+            renderView() {
+                this.mainArea.innerHTML = '';
+                let component = null;
+
+                if (this.view === 'HOME') {
+                    component = new HomeScreen(this.mainArea, (v) => this.setView(v));
+                } else if (this.view === 'PICTOGRAMS') {
+                    component = new PictogramCommunicator(this.mainArea, (v) => this.setView(v));
+                } else if (this.view === 'EMOTIONS') {
+                    component = new EmotionGame(this.mainArea, (v) => this.setView(v));
+                }
+
+                if (component) component.render();
+            }
+        }
+
+        class HomeScreen {
+            constructor(parent, setView) {
+                this.parent = parent;
+                this.setView = setView;
+            }
+
+            renderButton(color, icon, text, viewTarget) {
+                const btnContent = el('button', 
+                    'btn-3d text-gray-700 shadow-lg flex flex-col justify-center items-center p-6 gap-4 border-4 border-white/80 rounded-2xl w-64 h-56 bg-white/80',
+                    {
+                        onClick: () => this.setView(viewTarget)
+                    },
+                    [
+                        el('div', 'text-7xl drop-shadow-lg btn-3d-icon', { text: icon, style: `color: ${color}` }),
+                        el('span', 'font-lilita text-4xl tracking-wide btn-3d-text', { text: text, style: `color: ${color}` })
+                    ]
+                );
+
+                return el('div', 'perspective-container', {}, [btnContent]);
+            }
+
+            render() {
+                const container = el('div', 'text-center p-8 animate-fadeIn', {}, [
+                    el('div', 'p-6 rounded-2xl max-w-3xl mx-auto', {}, [
+                        el('h2', 'text-xl md:text-2xl font-bold text-white mb-4 subtitle-stroked', {
+                            text: "Uma aventura interativa para desenvolver a comunicação, reconhecer emoções e expandir a criatividade."
+                        })
+                    ]),
+                    el('div', 'flex flex-col md:flex-row justify-center items-center gap-10 md:gap-12 mt-10', {}, [
+                        this.renderButton("#4DB5F7", "💬", "Comunicar", "PICTOGRAMS"),
+                        this.renderButton("#F7A24D", "🥰", "Emoções", "EMOTIONS")
+                    ])
+                ]);
+                this.parent.appendChild(container);
+            }
+        }
+
+        class PictogramCommunicator {
+            constructor(parent, setView) {
+                this.parent = parent;
+                this.setView = setView;
+                this.sentence = [];
+                this.selectedCategory = "Sentimentos";
+                this.aiResponse = "Olá! Sou a Luz! Estou aqui para conversar com você. O que você quer dizer? 😊";
+                this.isProcessing = false;
+                this.showHelp = false;
+                this.systemPrompt = "Aja como a Luz, uma assistente virtual amigável para crianças autistas. Receba pictogramas (ex: 'Eu água'), corrija gramaticalmente ('Eu quero beber água') e responda confirmando e oferecendo 2 opções simples. Seja breve e use emojis.";
+            }
+
+            addPictogram(pic) {
+                if (this.sentence.length < 5) {
+                    this.sentence.push(pic);
+                    SoundUtils.playPop();
+                    this.render();
+                } else {
+                    SoundUtils.playIncorrect();
+                }
+            }
+
+            removeLast() {
+                if (this.sentence.length > 0) {
+                    this.sentence.pop();
+                    SoundUtils.playClear();
+                    this.render();
+                }
+            }
+
+            clear() {
+                this.sentence = [];
+                SoundUtils.playClear();
+                this.render();
+            }
+
+            async speak() {
+                if (this.sentence.length === 0 || this.isProcessing) return;
+                
+                const textToSpeak = this.sentence.map(p => p.label).join(" ");
+                SoundUtils.speak(textToSpeak);
+                
+                this.isProcessing = true;
+                this.render(); // Update UI for loading state
+
+                try {
+                    const response = await this.callGemini(textToSpeak);
+                    this.aiResponse = response;
+                    SoundUtils.speak(response);
+                } catch (error) {
+                    console.error(error);
+                    this.aiResponse = "Não consegui ouvir. Vamos tentar mais uma vez? 🔄";
+                }
+
+                this.isProcessing = false;
+                this.render();
+            }
+
+            async callGemini(userText) {
+                if (!API_KEY) throw new Error("No API Key");
+                
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+                const payload = {
+                    contents: [{ parts: [{ text: `Pictogramas selecionados: '${userText}'.` }] }],
+                    systemInstruction: { parts: [{ text: this.systemPrompt }] },
+                    generationConfig: { temperature: 0.7 }
+                };
+
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error("API Error");
+                
+                const data = await res.json();
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    return data.candidates[0].content.parts[0].text;
+                }
+                return "Erro na resposta.";
+            }
+
+            toggleHelp() {
+                this.showHelp = !this.showHelp;
+                SoundUtils.playPop();
+                this.render();
+            }
+
+            renderHelpModal() {
+                if (!this.showHelp) return null;
+                
+                return el('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn', {}, [
+                    el('div', 'bg-white rounded-3xl p-8 max-w-md m-4 shadow-2xl relative', {}, [
+                        el('button', 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold', 
+                           { text: '✕', onClick: () => this.toggleHelp() }),
+                        el('h3', 'font-lilita text-2xl text-blue-500 mb-4', { text: 'Como funciona o Comunicador?' }),
+                        el('div', 'space-y-4 text-gray-600 text-left', {}, [
+                            el('p', '', { text: "🧩 O comunicador usa pictogramas (imagens) para ajudar a criança a construir frases e expressar sentimentos e necessidades." }),
+                            el('p', '', { text: "🗣️ Ao tocar no botão 'Falar', a frase montada é lida em voz alta, reforçando a comunicação verbal." }),
+                            el('p', '', { text: "🤖 A robô 'Luz' entende a intenção da criança, corrige a frase (ex: entende 'Eu comer' como 'Eu quero comer') e responde carinhosamente, incentivando o diálogo." }),
+                            el('p', '', { text: "💡 Isso ajuda a reduzir a frustração e estimula a socialização de forma lúdica!" })
+                        ]),
+                        el('button', 'mt-6 w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-600 transition-colors', 
+                           { text: 'Entendi, vamos lá!', onClick: () => this.toggleHelp() })
+                    ])
+                ]);
+            }
+
+            render() {
+                this.parent.innerHTML = '';
+                const modal = this.renderHelpModal();
+                if (modal) this.parent.appendChild(modal);
+
+                const container = el('div', 'w-full max-w-6xl bg-white/90 rounded-3xl shadow-xl p-4 md:p-6 flex flex-col gap-6 relative min-h-[80vh]');
+
+                // Header
+                const header = el('div', 'flex justify-between items-center w-full pb-4 border-b-2 border-gray-100', {}, [
+                    el('div', 'relative w-32 h-10', {}, [
+                        el('button', 'absolute top-0 left-0 px-4 py-2 bg-orange-400 border-b-4 border-orange-600 text-white font-bold rounded-xl shadow active:border-b-2 active:mt-1 flex items-center gap-2 text-sm', 
+                           { onClick: () => this.setView('HOME') },
+                           [el('span', '', { text: '⬅️' }), el('span', 'hidden md:block', { text: 'Voltar' })]
+                        )
+                    ]),
+                    el('h2', 'font-lilita text-3xl text-blue-500 text-center', { text: 'Comunicar' }),
+                    el('button', 'w-10 h-10 rounded-full bg-blue-100 text-blue-500 font-bold text-xl hover:bg-blue-200 transition-colors flex items-center justify-center shadow-sm', 
+                       { text: '?', onClick: () => this.toggleHelp() })
+                ]);
+
+                // Robot Area
+                const robotEmoji = this.isProcessing ? "⏳" : "🤖";
+                const robotAnim = this.isProcessing ? "animate-bounce" : "animate-pulse-quick";
+                
+                const robotArea = el('div', 'flex flex-col md:flex-row items-center gap-4 bg-blue-50 rounded-2xl p-4 border-2 border-blue-100', {}, [
+                    el('div', `text-6xl ${robotAnim}`, { text: robotEmoji }),
+                    el('div', 'flex-1 bg-white p-4 rounded-xl rounded-tl-none shadow-sm relative min-h-[80px] flex items-center', {}, [
+                        el('p', 'text-gray-700 font-medium text-lg', { text: this.aiResponse }),
+                        el('div', 'absolute -left-2 top-4 w-4 h-4 bg-white transform rotate-45')
+                    ])
+                ]);
+
+                // Sentence Strip
+                const sentenceCards = this.sentence.map(p => 
+                    el('div', `flex flex-col items-center justify-center w-20 h-24 ${p.color} rounded-xl shadow-sm animate-pop-in bg-white border-b-4`, {}, [
+                        el('span', 'text-3xl mb-1', { text: p.emoji }),
+                        el('span', 'text-xs font-bold text-gray-600 px-1 text-center leading-tight', { text: p.label })
+                    ])
+                );
+
+                if (this.sentence.length === 0) {
+                    sentenceCards.push(el('span', 'text-gray-400 italic ml-4', { text: 'Toque nas figuras abaixo para montar uma frase...' }));
+                }
+
+                const sentenceStrip = el('div', 'bg-gray-100 rounded-2xl p-4 min-h-[100px] flex items-center justify-between gap-4 border-2 border-gray-200 shadow-inner', {}, [
+                    el('div', 'flex flex-wrap gap-2 flex-1', {}, sentenceCards),
+                    el('div', 'flex gap-2', {}, [
+                        el('button', 'p-3 bg-red-100 text-red-500 rounded-xl hover:bg-red-200 active:scale-95 transition-all border-b-4 border-red-200 active:border-b-0 active:translate-y-1',
+                            { text: '❌', title: 'Limpar', onClick: () => this.clear() }),
+                        el('button', `p-3 bg-green-500 text-white rounded-xl hover:bg-green-600 active:scale-95 transition-all border-b-4 border-green-700 active:border-b-0 active:translate-y-1 font-bold flex items-center gap-2 ${this.isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`,
+                            { onClick: () => this.speak() },
+                            [el('span', '', { text: '🔊' }), el('span', 'hidden md:inline', { text: 'Falar' })])
+                    ])
+                ]);
+
+                // Tabs
+                const tabs = el('div', 'flex flex-wrap gap-2 justify-center mb-2', {}, 
+                    Object.keys(PICTOGRAMS).map(cat => 
+                        el('button', `px-4 py-2 rounded-full font-bold text-sm transition-all ${cat === this.selectedCategory ? 'bg-blue-500 text-white shadow-md transform scale-105' : 'bg-white text-gray-500 hover:bg-gray-50'}`,
+                           { text: cat, onClick: () => { this.selectedCategory = cat; SoundUtils.playPop(); this.render(); } })
+                    )
+                );
+
+                // Grid
+                const grid = el('div', 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 overflow-y-auto max-h-[400px] p-2', {},
+                    PICTOGRAMS[this.selectedCategory].map(item => 
+                        el('button', `flex flex-col items-center justify-center p-3 aspect-square bg-white border-2 ${item.color.replace('bg-', 'hover:bg-').replace('border-', 'border-')} rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all active:scale-95`,
+                            { onClick: () => this.addPictogram(item) },
+                            [
+                                el('span', 'text-4xl md:text-5xl mb-2', { text: item.emoji }),
+                                el('span', 'font-bold text-gray-700 text-sm md:text-base', { text: item.label })
+                            ]
+                        )
+                    )
+                );
+
+                container.appendChild(header);
+                container.appendChild(robotArea);
+                container.appendChild(sentenceStrip);
+                container.appendChild(tabs);
+                container.appendChild(grid);
+                this.parent.appendChild(container);
+            }
+        }
+
+        class EmotionGame {
+            constructor(parent, setView) {
+                this.parent = parent;
+                this.setView = setView;
+                this.score = 0;
+                this.currentRound = 0;
+                this.maxRounds = 5;
+                this.gameState = "PLAYING";
+                this.currentEmotion = null;
+                this.options = [];
+                this.feedback = { message: "", type: "" };
+                this.setupRound();
+            }
+
+            setupRound() {
+                if (this.currentRound >= this.maxRounds) {
+                    this.gameState = "FINISHED";
+                    SoundUtils.playSuccess();
+                    return;
+                }
+
+                const target = EMOTION_LEVELS[Math.floor(Math.random() * EMOTION_LEVELS.length)];
+                this.currentEmotion = target;
+                
+                // Create options
+                let opts = [{ label: target.target, emoji: target.emoji, isCorrect: true }];
+                
+                // Add distractors
+                const distractors = [...target.distractors].sort(() => 0.5 - Math.random()).slice(0, 2);
+                distractors.forEach(emoji => opts.push({ label: "???", emoji: emoji, isCorrect: false }));
+                
+                // Shuffle
+                this.options = opts.sort(() => 0.5 - Math.random());
+                this.gameState = "PLAYING";
+            }
+
+            handleAnswer(option) {
+                if (this.gameState !== "PLAYING") return;
+
+                if (option.isCorrect) {
+                    this.score++;
+                    this.gameState = "FEEDBACK";
+                    this.feedback = { message: "Muito bem! 🎉", type: "success" };
+                    SoundUtils.playCorrect();
+                } else {
+                    this.gameState = "FEEDBACK";
+                    this.feedback = { message: "Ops! Tente de novo.", type: "error" };
+                    SoundUtils.playIncorrect();
+                }
+
+                this.render();
+                setTimeout(() => {
+                    this.currentRound++;
+                    this.setupRound();
+                    this.render();
+                }, 2000);
+            }
+
+            restart() {
+                this.score = 0;
+                this.currentRound = 0;
+                this.setupRound();
+                this.render();
+            }
+
+            render() {
+                this.parent.innerHTML = '';
+                const container = el('div', 'w-full max-w-4xl bg-white/90 rounded-3xl shadow-xl p-6 flex flex-col gap-6 text-center min-h-[60vh] justify-center relative overflow-hidden animate-fadeIn');
+
+                // Back Button
+                container.appendChild(
+                    el('button', 'absolute top-4 left-4 px-4 py-2 bg-orange-400 border-b-4 border-orange-600 text-white font-bold rounded-xl shadow active:border-b-2 active:mt-1 flex items-center gap-2 text-sm z-20',
+                       { onClick: () => this.setView('HOME') },
+                       [el('span', '', { text: '⬅️' }), el('span', 'hidden md:block', { text: 'Voltar' })]
+                    )
+                );
+
+                if (this.gameState === "FINISHED") {
+                    const result = el('div', 'flex flex-col items-center gap-6 animate-tada', {}, [
+                        el('span', 'text-8xl', { text: '🏆' }),
+                        el('h2', 'font-lilita text-4xl text-orange-500', { text: 'Parabéns!' }),
+                        el('p', 'text-2xl text-gray-600', { text: `Você acertou ${this.score} de ${this.maxRounds}!` }),
+                        el('button', 'mt-4 bg-green-500 text-white text-xl font-bold py-4 px-8 rounded-2xl shadow-lg hover:bg-green-600 transition-transform hover:scale-105',
+                           { text: 'Jogar Novamente', onClick: () => this.restart() })
+                    ]);
+                    container.appendChild(result);
+                } else {
+                    // Progress Bar
+                    container.appendChild(
+                        el('div', 'w-full bg-gray-200 rounded-full h-4 mb-4 overflow-hidden', {}, [
+                            el('div', 'bg-green-500 h-4 transition-all duration-500', { style: `width: ${(this.currentRound / this.maxRounds) * 100}%` })
+                        ])
+                    );
+
+                    // Question
+                    container.appendChild(el('h2', 'font-lilita text-3xl md:text-4xl text-gray-700 mb-4', { text: `Quem está ${this.currentEmotion.target}?` }));
+
+                    // Options
+                    const optionsDiv = el('div', 'flex flex-wrap justify-center gap-6 md:gap-10 mt-4', {}, 
+                        this.options.map(opt => {
+                            let extraClass = "";
+                            if (this.gameState === "FEEDBACK") {
+                                if (opt.isCorrect && this.feedback.type === "success") extraClass = "border-green-400 bg-green-50";
+                                else if (!opt.isCorrect && this.feedback.type === "error") extraClass = "animate-shake border-red-400";
+                            }
+
+                            return el('button', 
+                                `text-7xl md:text-8xl p-6 bg-white border-4 border-orange-100 rounded-3xl shadow-md hover:scale-110 transition-transform duration-200 active:scale-95 ${extraClass}`,
+                                { text: opt.emoji, onClick: () => this.handleAnswer(opt) }
+                            );
+                        })
+                    );
+                    container.appendChild(optionsDiv);
+
+                    // Feedback Overlay
+                    if (this.gameState === "FEEDBACK") {
+                        const feedbackEl = el('div', 
+                            `absolute inset-0 flex items-center justify-center bg-white/80 z-10 font-lilita text-4xl ${this.feedback.type === "success" ? "text-green-600" : "text-orange-500"} animate-pop-in`,
+                            { text: this.feedback.message }
+                        );
+
+                        if (this.feedback.type === "success") {
+                            for (let i = 0; i < 10; i++) {
+                                const confetti = el('div', 'confetti');
+                                confetti.style.left = Math.random() * 100 + '%';
+                                confetti.style.animationDelay = Math.random() + 's';
+                                confetti.style.backgroundColor = ['#ff0000', '#00ff00', '#0000ff', '#ffff00'][Math.floor(Math.random() * 4)];
+                                feedbackEl.appendChild(confetti);
+                            }
+                        }
+                        container.appendChild(feedbackEl);
+                    }
+                }
+                
+                this.parent.appendChild(container);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const appContainer = document.getElementById('app-container');
+            new App(appContainer);
         });
-      });
-      historyEl.querySelectorAll('button[data-delete]').forEach(b=>{
-        b.addEventListener('click',()=>{
-          const i = Number(b.getAttribute('data-delete'));
-          history.splice(i,1); save('history',history); renderHistory();
-        });
-      });
-    }
 
-    // Export JSON
-    function exportData(){
-      const blob = new Blob([JSON.stringify({history, emotions}, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download = 'comunicar_emocoes.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    }
-
-    // Add new emotion
-    document.getElementById('addForm').addEventListener('submit',(ev)=>{
-      ev.preventDefault();
-      const emoji = document.getElementById('newEmoji').value.trim() || '💬';
-      const label = document.getElementById('newLabel').value.trim() || 'Nova';
-      emotions.push({emoji, label});
-      save('emotions', emotions);
-      renderEmotions();
-      ev.target.reset();
-    });
-
-    // Events
-    document.getElementById('speakBtn').addEventListener('click', ()=>{ updateGenerated(); speak(generated.textContent); });
-    document.getElementById('saveBtn').addEventListener('click', saveEntry);
-    document.getElementById('exportBtn').addEventListener('click', exportData);
-    reasonInput.addEventListener('input', updateGenerated);
-
-    // Init
-    renderEmotions(); updateGenerated(); renderHistory();
-
-    // --- PWA: tenta registrar service worker ---
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('/sw.js')
-        .then(()=>console.log('Service worker registrado'))
-        .catch((e)=>console.log('SW registro falhou', e));
-    }
-
-    // Accessibility: keyboard shortcut to focus reason input (R) and to speak (S)
-    document.addEventListener('keydown', (e)=>{
-      if(e.key==='r' || e.key==='R'){ reasonInput.focus(); }
-      if(e.key==='s' || e.key==='S'){ e.preventDefault(); speak(generated.textContent); }
-    });
-
-    // Warn about storage size politely
-    window.addEventListener('storage', ()=>{/* could sync across tabs */});
-  </script>
-
-  <!--
-    ==========================
-    MANIFEST (manifest.json)
-    Save this JSON as manifest.json next to the index.html file.
-    ==========================
-
-    {
-      "name": "Comunicar Emoções",
-      "short_name": "Emoções",
-      "start_url": "/",
-      "display": "standalone",
-      "background_color": "#f7fbff",
-      "theme_color": "#2b7cff",
-      "icons": [
-        { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-        { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
-      ]
-    }
-
-    ==========================
-    SERVICE WORKER (sw.js)
-    Save this JS as sw.js at the site root. For production, customize caching rules.
-    ==========================
-
-    const CACHE_NAME = 'comunicar-v1';
-    const FILES_TO_CACHE = [
-      '/', '/index.html', '/manifest.json'
-      // adicione os recursos essenciais (CSS, ícones) aqui
-    ];
-
-    self.addEventListener('install', (evt) => {
-      evt.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
-      );
-      self.skipWaiting();
-    });
-
-    self.addEventListener('activate', (evt) => {
-      evt.waitUntil(
-        caches.keys().then((keys) => Promise.all(
-          keys.map((k) => { if(k !== CACHE_NAME) return caches.delete(k); })
-        ))
-      );
-      self.clients.claim();
-    });
-
-    self.addEventListener('fetch', (evt) => {
-      if(evt.request.method !== 'GET') return;
-      evt.respondWith(
-        caches.match(evt.request).then((res) => res || fetch(evt.request))
-      );
-    });
-
-    Notes:
-    - To enable PWA install prompt, host the files on HTTPS (or localhost).
-    - Provide icons at the paths defined in manifest.json.
-    - Test with Chrome/Edge devtools (Application > Manifest/Service Workers).
-
-  -->
+    </script>
 </body>
 </html>
