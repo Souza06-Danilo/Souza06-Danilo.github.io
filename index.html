@@ -418,10 +418,11 @@
                 this.setView = setView;
                 this.sentence = [];
                 this.selectedCategory = "Sentimentos";
-                this.aiResponse = "Olá! Sou a Luz! Estou aqui para conversar com você. O que você quer dizer? 😊";
+                this.aiResponse = "Olá! Sou a Luz! Estou aqui para conversar. O que você quer dizer? 😊";
                 this.isProcessing = false;
                 this.showHelp = false;
-                this.systemPrompt = "Aja como a Luz, uma assistente virtual amigável para crianças autistas. Receba pictogramas (ex: 'Eu água'), corrija gramaticalmente ('Eu quero beber água') e responda confirmando e oferecendo 2 opções simples. Seja breve e use emojis.";
+                // Prompt atualizado para garantir opções
+                this.systemPrompt = "Você é a Luz, uma robô amiga de crianças autistas. Sua função é: 1. Corrigir a frase dos pictogramas para português natural. 2. Fazer uma pergunta oferecendo DUAS opções relacionadas para a criança escolher. Exemplo: Se receber 'Eu comer', responda: 'Você quer comer? Que delícia! Você quer 🍎 Maçã ou 🍌 Banana?'. Use emojis. Seja breve.";
             }
 
             addPictogram(pic) {
@@ -462,12 +463,39 @@
                     this.aiResponse = response;
                     SoundUtils.speak(response);
                 } catch (error) {
-                    console.error(error);
-                    this.aiResponse = "Não consegui ouvir. Vamos tentar mais uma vez? 🔄";
+                    console.error("Erro na comunicação:", error);
+                    // Fallback Inteligente em caso de erro da API
+                    const fallback = this.getOfflineResponse(textToSpeak);
+                    this.aiResponse = fallback;
+                    SoundUtils.speak(fallback);
                 }
 
                 this.isProcessing = false;
                 this.render();
+            }
+
+            // Sistema de Fallback para garantir que nunca mostre erro
+            getOfflineResponse(text) {
+                const lowerText = text.toLowerCase();
+                
+                if (lowerText.includes("fome") || lowerText.includes("comer") || lowerText.includes("maca") || lowerText.includes("banana")) {
+                    return "Entendi que você quer comer. Que delícia! Você quer 🍎 Fruta ou 🍪 Biscoito?";
+                }
+                if (lowerText.includes("beber") || lowerText.includes("agua") || lowerText.includes("sede")) {
+                    return "Você quer beber algo? Importante se hidratar! Você quer 🥤 Suco ou 🥛 Leite?";
+                }
+                if (lowerText.includes("brincar") || lowerText.includes("parque")) {
+                    return "Oba! Hora de brincar! Você prefere ⚽ Bola ou 🚗 Carrinho?";
+                }
+                if (lowerText.includes("triste") || lowerText.includes("chorar")) {
+                    return "Ah, não fique triste. Quer um 🤗 Abraço ou quer ouvir uma 🎵 Música?";
+                }
+                if (lowerText.includes("feliz")) {
+                    return "Que bom que você está feliz! Vamos comemorar? Você quer 👏 Palmas ou 💃 Dançar?";
+                }
+                
+                // Resposta padrão genérica com opções
+                return `Entendi: ${text}. Você quer fazer isso agora ou depois?`;
             }
 
             async callGemini(userText) {
@@ -475,7 +503,7 @@
                 
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
                 const payload = {
-                    contents: [{ parts: [{ text: `Pictogramas selecionados: '${userText}'.` }] }],
+                    contents: [{ parts: [{ text: `A criança montou os pictogramas: '${userText}'.` }] }],
                     systemInstruction: { parts: [{ text: this.systemPrompt }] },
                     generationConfig: { temperature: 0.7 }
                 };
@@ -486,13 +514,15 @@
                     body: JSON.stringify(payload)
                 });
 
-                if (!res.ok) throw new Error("API Error");
+                if (!res.ok) {
+                    throw new Error("API Error: " + res.status);
+                }
                 
                 const data = await res.json();
                 if (data.candidates && data.candidates[0].content.parts[0].text) {
                     return data.candidates[0].content.parts[0].text;
                 }
-                return "Erro na resposta.";
+                throw new Error("Formato de resposta inválido");
             }
 
             toggleHelp() {
