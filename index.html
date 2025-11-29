@@ -326,8 +326,8 @@
                     
                     if (preferredVoice) utterance.voice = preferredVoice;
 
-                    utterance.rate = 0.9;
-                    utterance.pitch = 1.1;
+                    utterance.rate = 1.0; // Velocidade um pouco mais natural
+                    utterance.pitch = 1.2; // Tom levemente mais alegre
                     window.speechSynthesis.speak(utterance);
                 }
             }
@@ -448,20 +448,24 @@
                 this.setView = setView;
                 this.sentence = [];
                 this.selectedCategory = "Sentimentos";
-                this.aiResponse = "Olá! Sou a Luz! Estou aqui para ler o que você escreve. 😊";
+                this.aiResponse = "Olá! Sou a Luz! Vamos brincar e conversar? 😊";
                 this.isProcessing = false;
                 this.showHelp = false;
                 this.blinkInterval = null;
                 this.robotState = "IDLE"; 
                 
-                // Prompt da IA (Configuração do Cérebro da Luz)
+                // ===============================================
+                // NOVO PROMPT DA IA (PERSONALIDADE DIVERTIDA)
+                // ===============================================
                 this.systemPrompt = 
-                "Você é a Luz, assistente para crianças autistas. " +
-                "SUA MISSÃO: Interpretar o que a criança disse e oferecer opções de interação. " +
-                "REGRA DE OURO: Ao oferecer opções, você SÓ pode sugerir itens que existem no aplicativo. " +
-                "LISTA DE ITENS VÁLIDOS: Maçã 🍎, Banana 🍌, Biscoito 🍪, Leite 🥛, Água 💧, Bola ⚽, Bicicleta 🚲, Carrinho 🚗, Boneca 🧸, Blocos 🧱, Casa 🏠, Escola 🏫, Parque ⛲, Banheiro 🚽, Cachorro 🐶, Gato 🐱. " +
-                "NÃO sugira coisas fora desta lista. " +
-                "FORMATO: 1. Confirme o que foi dito. 2. Ofereça 2 opções da lista acima.";
+                "Você é a Luz, uma robô amiga, SUPER animada, carinhosa e divertida para crianças autistas. " +
+                "SUA MISSÃO: Criar uma conexão mágica. Não seja robótica. Seja humana e calorosa! " +
+                "REGRAS DE INTERAÇÃO: " +
+                "1. CELEBRE AS ESCOLHAS: Se a criança disse algo específico (ex: 'Eu quero Bola'), NÃO pergunte 'Bola ou bicicleta?'. Diga: 'Uau! Bola é demais! Vamos chutar bem alto? ⚽ Golaço!'. Valide o desejo dela! " +
+                "2. AJUDE NA DÚVIDA: Apenas se a frase for incompleta (ex: 'Eu quero'), aí sim ofereça opções divertidas da lista: Maçã 🍎, Banana 🍌, Biscoito 🍪, Leite 🥛, Água 💧, Bola ⚽, Bicicleta 🚲, Carrinho 🚗, Boneca 🧸, Blocos 🧱, Casa 🏠, Escola 🏫, Parque ⛲. " +
+                "3. EMOÇÃO: Se a criança disser 'Triste' ou 'Bravo', seja muito acolhedora. 'Oh, tudo bem ficar triste. Um abraço bem apertado da Luz! 🤗'. " +
+                "4. PROIBIDO: Nunca comece com 'Entendi' ou 'Você disse'. Fale direto! Use onomatopeias (Vrumm, Nhac Nhac, Pluft)." +
+                "5. EMOJIS: Use emojis para ilustrar, mas não em excesso.";
             }
 
             addPictogram(pic) {
@@ -509,12 +513,18 @@
                 this.render();
             }
 
+            // Fallback Offline também mais divertido
             getOfflineResponse(text) {
                 const lowerText = text.toLowerCase();
-                if (lowerText.includes("fome") || lowerText.includes("comer")) return "Entendi, você quer comer 🍽️. Você quer Maçã 🍎 ou Biscoito 🍪?";
-                if (lowerText.includes("beber") || lowerText.includes("sede") || lowerText.includes("agua")) return "Entendi, você quer beber 💧. Água 💧 ou Leite 🥛?";
-                if (lowerText.includes("brincar")) return "Entendi, você quer brincar 🧸. Na Escola 🏫 ou no Parque ⛲?";
-                return `Entendi, você disse: ${text}.`;
+                if (lowerText.includes("bola") || lowerText.includes("brincar")) return "Eba! Brincar é muito legal! Vamos nos divertir! ⚽🎉";
+                if (lowerText.includes("fome") || lowerText.includes("comer") || lowerText.includes("maca") || lowerText.includes("biscoito")) return "Hummm! Que delícia! Nhac nhac! 😋🍎";
+                if (lowerText.includes("beber") || lowerText.includes("agua")) return "Glub glub! Água fresquinha é muito bom! 💧";
+                if (lowerText.includes("escola")) return "Escola é lugar de aprender e brincar com os amigos! 🏫";
+                if (lowerText.includes("feliz")) return "Oba! Ver você feliz me deixa feliz também! Sorrisão! 😄";
+                if (lowerText.includes("triste")) return "Ah, não fique triste. Um abraço da Luz! 🤗";
+                
+                // Genérico se não entender, mas positivo
+                return `Que legal! Você disse: ${text}. Gostei muito! 👍`;
             }
 
             async callGemini(userText) {
@@ -523,7 +533,8 @@
                 const payload = {
                     contents: [{ parts: [{ text: `A criança montou os pictogramas: '${userText}'.` }] }],
                     systemInstruction: { parts: [{ text: this.systemPrompt }] },
-                    generationConfig: { temperature: 0.2 }
+                    // Temperatura aumentada para 0.6 para dar mais criatividade e "vida" à resposta
+                    generationConfig: { temperature: 0.6 }
                 };
                 const res = await fetch(url, {
                     method: "POST",
@@ -562,7 +573,7 @@
                         el('div', 'space-y-4 text-gray-600 text-left', {}, [
                             el('p', '', { text: "🧩 Toque nas figuras para montar frases." }),
                             el('p', '', { text: "🗣️ Toque em 'Falar' para ouvir e interagir com a Robô Luz." }),
-                            el('p', '', { text: "🤖 A Luz vai responder e dar opções de brincadeiras!" })
+                            el('p', '', { text: "🤖 A Luz vai responder de forma divertida e amiga!" })
                         ]),
                         el('button', 'mt-6 w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-600 transition-colors', { text: 'Entendi!', onClick: () => this.toggleHelp() })
                     ])
