@@ -1,32 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- CONFIGURAÇÕES DE METADADOS E PWA -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#87CEEB" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="description" content="Mundo Colorido - App de comunicação e emoções para autismo" />
     
     <title>Mundo Colorido</title>
     
-    <!-- PWA Manifest -->
+    <!-- ÍCONES E MANIFESTO -->
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/4150/4150367.png" />
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4150/4150367.png" />
 
+    <!-- ESTILOS (CSS/TAILWIND) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Lilita+One&display=swap" rel="stylesheet">
     
     <style>
+        /* ESTILOS VISUAIS DO FRONTEND */
         body {
             font-family: 'Nunito', sans-serif;
             background-color: #87CEEB;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='skyGradient' x1='0.5' y1='0' x2='0.5' y2='1'%3E%3Cstop offset='0%25' stop-color='%2387CEEB' /%3E%3Cstop offset='100%25' stop-color='%23B0E0E6' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23skyGradient)' /%3E%3Ccircle cx='1750' cy='170' r='120' fill='%23FFD700' opacity='0.9'/%3E%3Cg opacity='0.9'%3E%3Ccircle cx='500' cy='250' r='80' fill='white'/%3E%3Ccircle cx='590' cy='280' r='90' fill='white'/%3E%3Ccircle cx='410' cy='280' r='70' fill='white'/%3E%3Ccircle cx='1200' cy='350' r='100' fill='white'/%3E%3Ccircle cx='1300' cy='380' r='110' fill='white'/%3E%3Ccircle cx='1100' cy='380' r='90' fill='white'/%3E%3Ccircle cx='1600' cy='230' r='60' fill='white'/%3E%3Ccircle cx='1660' cy='250' r='70' fill='white'/%3E%3C/g%3E%3Cpath d='M-10 1080 L-10 800 Q 480 600, 960 850 T 1930 750 L 1930 1080 Z' fill='%2398FB98' /%3E%3Cpath d='M-10 1080 L-10 900 Q 320 750, 640 920 T 1280 850 T 1930 950 L 1930 1080 Z' fill='%233CB371' /%3E%3C/svg%3E");
             background-size: cover;
-            background-position: center;
             background-attachment: fixed;
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
@@ -40,99 +39,48 @@
             -webkit-text-stroke: 2px #4A4A4A;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
         }
-        @media (min-width: 768px) {
-            .title-stroked {
-                -webkit-text-stroke: 6px #4A4A4A;
-            }
-        }
 
-        /* Animations */
-        @keyframes confetti-fall {
-            0% { transform: translateY(-100%) rotateZ(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; }
-        }
-        .confetti {
-            position: absolute; width: 12px; height: 12px;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: confetti-fall 3s linear infinite;
-            z-index: 50;
-        }
-        @keyframes pop {
-            0% { transform: scale(0.9); } 50% { transform: scale(1.05); } 100% { transform: scale(1); }
-        }
+        /* ANIMAÇÕES CSS */
+        @keyframes pop { 0% { transform: scale(0.9); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .animate-pop { animation: pop 0.3s ease-out; }
-        @keyframes pop-in {
-            0% { transform: scale(0.8); opacity: 0; }
-            80% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); }
-        }
+        
+        @keyframes pop-in { 0% { transform: scale(0.8); opacity: 0; } 80% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); } }
         .animate-pop-in { animation: pop-in 0.4s ease-out forwards; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); }
-        }
+        
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
         .animate-shake { animation: shake 0.4s ease-in-out; }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2); }
-            50% { transform: scale(1.03); box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0); }
-        }
+        
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         .animate-pulse-quick { animation: pulse 1.5s ease-in-out infinite; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes tada {
-            from { transform: scale3d(1, 1, 1); }
-            10%, 20% { transform: scale3d(.95, .95, .95) rotate3d(0, 0, 1, -3deg); }
-            30%, 50%, 70%, 90% { transform: scale3d(1.05, 1.05, 1.05) rotate3d(0, 0, 1, 3deg); }
-            40%, 60%, 80% { transform: scale3d(1.05, 1.05, 1.05) rotate3d(0, 0, 1, -3deg); }
-            to { transform: scale3d(1, 1, 1); }
-        }
+        
+        @keyframes float-idle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .animate-float { animation: float-idle 3s ease-in-out infinite; }
+        
+        @keyframes tada { from { transform: scale3d(1, 1, 1); } 10%, 20% { transform: scale3d(.95, .95, .95) rotate3d(0, 0, 1, -3deg); } 30%, 50%, 70%, 90% { transform: scale3d(1.05, 1.05, 1.05) rotate3d(0, 0, 1, 3deg); } 40%, 60%, 80% { transform: scale3d(1.05, 1.05, 1.05) rotate3d(0, 0, 1, -3deg); } to { transform: scale3d(1, 1, 1); } }
         .animate-tada { animation: tada 1s; }
 
-        /* 3D Button Styles */
-        .perspective-container {
-            perspective: 800px;
-        }
+        /* ESTILOS DO BOTÃO 3D */
+        .perspective-container { perspective: 800px; }
         .btn-3d {
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            will-change: transform;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
+            position: relative; transform-style: preserve-3d; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform; backface-visibility: hidden;
         }
         .btn-3d::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
+            content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0));
-            border-radius: 1rem; 
-            transform: translateZ(25px);
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            opacity: 0;
+            border-radius: 1rem; transform: translateZ(25px); pointer-events: none;
+            transition: opacity 0.3s ease; opacity: 0;
         }
-        .perspective-container:hover .btn-3d {
-            transform: rotateY(-10deg) rotateX(10deg) scale(1.05);
-            box-shadow: 10px 15px 30px rgba(0,0,0,0.2);
-        }
-        .perspective-container:hover .btn-3d::before {
-            opacity: 1;
-        }
-        .btn-3d-icon, .btn-3d-text {
-            transform: translateZ(50px);
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.15);
-        }
-        .btn-3d:active {
-            transform: rotateY(0) rotateX(0) scale(0.95) !important;
-            transition: transform 0.1s ease;
-        }
+        .perspective-container:hover .btn-3d { transform: rotateY(-10deg) rotateX(10deg) scale(1.05); box-shadow: 10px 15px 30px rgba(0,0,0,0.2); }
+        .perspective-container:hover .btn-3d::before { opacity: 1; }
+        .btn-3d-icon, .btn-3d-text { transform: translateZ(50px); text-shadow: 2px 2px 10px rgba(0,0,0,0.15); }
+        .btn-3d:active { transform: rotateY(0) rotateX(0) scale(0.95) !important; transition: transform 0.1s ease; }
         
-        /* Loading Spinner */
+        /* OVERLAYS */
+        #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #87CEEB; z-index: 9999;
@@ -140,30 +88,32 @@
             transition: opacity 0.5s ease;
         }
         .loader {
-            border: 8px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 8px solid #fff;
-            width: 60px; height: 60px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            border: 8px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top: 8px solid #fff;
+            width: 60px; height: 60px; animation: spin 1s linear infinite; margin-bottom: 20px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
+    <!-- ESTRUTURA BASE DO FRONTEND -->
+    
+    <!-- Tela de Carregamento -->
     <div id="loading-overlay">
         <div class="loader"></div>
         <h2 class="font-lilita text-2xl text-white tracking-wider">Carregando o Mundo Colorido...</h2>
     </div>
 
-    <!-- App Root -->
+    <!-- Canvas para Efeitos Especiais (Confetes) -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Container Principal da Aplicação -->
     <div id="app-container" class="min-h-screen w-full flex flex-col items-center text-gray-800"></div>
 
+    <!-- FUNÇÕES JAVASCRIPT (LÓGICA DO APP) -->
     <script>
-        /**
-         * CONFIGURAÇÃO & DADOS
-         */
+        // ==========================================
+        // CONFIGURAÇÕES E DADOS
+        // ==========================================
         const API_KEY = "AIzaSyCShU4DBkhKMxpG5fCGM9kFHUf0A_vaFnY";
 
         const PICTOGRAMS = {
@@ -220,11 +170,14 @@
             {id: 5, target: "Amor", emoji: "😍", distractors: ["😢", "😠", "🤮"]},
         ];
 
-        /**
-         * UTILITÁRIOS
-         */
+        // ==========================================
+        // UTILITÁRIOS E FUNÇÕES AUXILIARES
+        // ==========================================
 
-        // Função Helper para criar elementos DOM
+        /**
+         * Função Helper (el) - Construtor de Elementos HTML
+         * Cria elementos do DOM de forma programática.
+         */
         function el(tag, className = "", props = {}, children = []) {
             const element = document.createElement(tag);
             if (className) element.className = className;
@@ -235,7 +188,6 @@
                 } else if (key === 'style') {
                     element.setAttribute('style', value);
                 } else if (key.startsWith('on') && typeof value === 'function') {
-                    // ex: onclick -> click
                     element.addEventListener(key.substring(2).toLowerCase(), value);
                 } else {
                     element.setAttribute(key, value);
@@ -243,9 +195,7 @@
             }
 
             if (Array.isArray(children)) {
-                children.forEach(child => {
-                    if (child) element.appendChild(child);
-                });
+                children.forEach(child => { if (child) element.appendChild(child); });
             } else if (children instanceof HTMLElement) {
                 element.appendChild(children);
             }
@@ -253,6 +203,74 @@
             return element;
         }
 
+        /**
+         * Sistema de Confetes (Canvas API)
+         */
+        class ConfettiSystem {
+            constructor() {
+                this.canvas = document.getElementById('confetti-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                this.animationId = null;
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            createParticles(count = 100) {
+                const colors = ['#FFD700', '#FF6347', '#87CEEB', '#90EE90', '#FF69B4'];
+                for (let i = 0; i < count; i++) {
+                    this.particles.push({
+                        x: window.innerWidth / 2,
+                        y: window.innerHeight / 2,
+                        vx: (Math.random() - 0.5) * 20,
+                        vy: (Math.random() - 0.5) * 20 - 5,
+                        size: Math.random() * 10 + 5,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        rotation: Math.random() * 360,
+                        rotationSpeed: (Math.random() - 0.5) * 10,
+                        opacity: 1
+                    });
+                }
+                if (!this.animationId) this.animate();
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.particles.forEach((p, index) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.5; // Gravidade
+                    p.rotation += p.rotationSpeed;
+                    p.opacity -= 0.01;
+
+                    this.ctx.save();
+                    this.ctx.translate(p.x, p.y);
+                    this.ctx.rotate((p.rotation * Math.PI) / 180);
+                    this.ctx.globalAlpha = p.opacity;
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    this.ctx.restore();
+
+                    if (p.opacity <= 0) this.particles.splice(index, 1);
+                });
+
+                if (this.particles.length > 0) {
+                    this.animationId = requestAnimationFrame(() => this.animate());
+                } else {
+                    this.animationId = null;
+                }
+            }
+        }
+        const confettiSystem = new ConfettiSystem();
+
+        /**
+         * Gerenciador de Áudio e Voz (Web Audio API + SpeechSynthesis)
+         */
         class SoundUtils {
             static get context() {
                 if (!this._context) {
@@ -281,15 +299,10 @@
                 osc.stop(ctx.currentTime + startTime + duration);
             }
 
+            // Efeitos Sonoros
             static playPop() { this.playTone('sine', 440, 0.1, 0.3); }
-            static playClear() { 
-                this.playTone('triangle', 300, 0.2, 0.2); 
-                this.playTone('triangle', 200, 0.2, 0.2, 0.1);
-            }
-            static playCorrect() {
-                this.playTone('sine', 523.25, 0.15, 0.4);
-                this.playTone('sine', 659.25, 0.2, 0.4, 0.15);
-            }
+            static playClear() { this.playTone('triangle', 300, 0.2, 0.2); this.playTone('triangle', 200, 0.2, 0.2, 0.1); }
+            static playCorrect() { this.playTone('sine', 523.25, 0.15, 0.4); this.playTone('sine', 659.25, 0.2, 0.4, 0.15); }
             static playIncorrect() { this.playTone('sawtooth', 220, 0.2, 0.2); }
             static playSuccess() {
                 const now = 0;
@@ -299,21 +312,35 @@
                 this.playTone('sine', 1046.50, 0.2, 0.4, now + 0.3);
             }
 
+            // Sintetizador de Voz (TTS)
             static speak(text) {
                 if ('speechSynthesis' in window) {
                     window.speechSynthesis.cancel();
                     const utterance = new SpeechSynthesisUtterance(text);
                     utterance.lang = "pt-BR";
+                    
+                    // Tenta selecionar voz do Google
+                    const voices = window.speechSynthesis.getVoices();
+                    const ptVoices = voices.filter(v => v.lang.includes('pt-BR') || v.lang.includes('pt'));
+                    const preferredVoice = ptVoices.find(v => v.name.includes('Google')) || ptVoices[0];
+                    
+                    if (preferredVoice) utterance.voice = preferredVoice;
+
                     utterance.rate = 0.9;
                     utterance.pitch = 1.1;
                     window.speechSynthesis.speak(utterance);
                 }
             }
         }
+        
+        // Garante carregamento das vozes
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        }
 
-        /**
-         * COMPONENTES DA APLICAÇÃO
-         */
+        // ==========================================
+        // COMPONENTES PRINCIPAIS (CLASSES)
+        // ==========================================
 
         class App {
             constructor(root) {
@@ -331,15 +358,11 @@
                     setTimeout(() => loader.remove(), 500);
                 }
 
-                // Structure
                 this.root.innerHTML = '';
                 this.root.appendChild(this.renderHeader());
-                
                 this.mainArea = el('main', 'w-full flex-grow flex flex-col items-center justify-center p-4 md:p-6');
                 this.root.appendChild(this.mainArea);
-                
                 this.root.appendChild(this.renderFooter());
-
                 this.renderView();
             }
 
@@ -394,15 +417,12 @@
             renderButton(color, icon, text, viewTarget) {
                 const btnContent = el('button', 
                     'btn-3d text-gray-700 shadow-lg flex flex-col justify-center items-center p-6 gap-4 border-4 border-white/80 rounded-2xl w-64 h-56 bg-white/80',
-                    {
-                        onClick: () => this.setView(viewTarget)
-                    },
+                    { onClick: () => this.setView(viewTarget) },
                     [
                         el('div', 'text-7xl drop-shadow-lg btn-3d-icon', { text: icon, style: `color: ${color}` }),
                         el('span', 'font-lilita text-4xl tracking-wide btn-3d-text', { text: text, style: `color: ${color}` })
                     ]
                 );
-
                 return el('div', 'perspective-container', {}, [btnContent]);
             }
 
@@ -431,24 +451,17 @@
                 this.aiResponse = "Olá! Sou a Luz! Estou aqui para ler o que você escreve. 😊";
                 this.isProcessing = false;
                 this.showHelp = false;
+                this.blinkInterval = null;
+                this.robotState = "IDLE"; 
                 
-                // Prompt estritamente restrito às opções disponíveis no app
+                // Prompt da IA (Configuração do Cérebro da Luz)
                 this.systemPrompt = 
                 "Você é a Luz, assistente para crianças autistas. " +
                 "SUA MISSÃO: Interpretar o que a criança disse e oferecer opções de interação. " +
                 "REGRA DE OURO: Ao oferecer opções, você SÓ pode sugerir itens que existem no aplicativo. " +
-                "LISTA DE ITENS VÁLIDOS PARA SUGESTÃO: " +
-                "- COMIDAS: Maçã 🍎, Banana 🍌, Biscoito 🍪, Leite 🥛, Água 💧. " +
-                "- BRINQUEDOS: Bola ⚽, Bicicleta 🚲, Carrinho 🚗, Boneca 🧸, Blocos 🧱. " +
-                "- LUGARES: Casa 🏠, Escola 🏫, Parque ⛲, Banheiro 🚽. " +
-                "- ANIMAIS: Cachorro 🐶, Gato 🐱. " +
-                "NÃO sugira coisas fora desta lista (como 'suco', 'cinema', 'shopping'). " +
-                "FORMATO DE RESPOSTA: " +
-                "1. Confirme o que foi dito. " +
-                "2. Ofereça 2 opções da lista acima que façam sentido. " +
-                "Exemplo 1: Se 'Brincar', diga: 'Entendi, quer brincar 🧸. Na Escola 🏫 ou Casa 🏠?' " +
-                "Exemplo 2: Se 'Comer', diga: 'Entendi, quer comer 🍽️. Maçã 🍎 ou Banana 🍌?' " +
-                "Use emojis. Não descreva os emojis com texto repetitivo.";
+                "LISTA DE ITENS VÁLIDOS: Maçã 🍎, Banana 🍌, Biscoito 🍪, Leite 🥛, Água 💧, Bola ⚽, Bicicleta 🚲, Carrinho 🚗, Boneca 🧸, Blocos 🧱, Casa 🏠, Escola 🏫, Parque ⛲, Banheiro 🚽, Cachorro 🐶, Gato 🐱. " +
+                "NÃO sugira coisas fora desta lista. " +
+                "FORMATO: 1. Confirme o que foi dito. 2. Ofereça 2 opções da lista acima.";
             }
 
             addPictogram(pic) {
@@ -458,14 +471,6 @@
                     this.render();
                 } else {
                     SoundUtils.playIncorrect();
-                }
-            }
-
-            removeLast() {
-                if (this.sentence.length > 0) {
-                    this.sentence.pop();
-                    SoundUtils.playClear();
-                    this.render();
                 }
             }
 
@@ -482,85 +487,52 @@
                 SoundUtils.speak(textToSpeak);
                 
                 this.isProcessing = true;
-                this.render(); // Update UI for loading state
+                this.robotState = "THINKING";
+                this.render(); 
 
-                // Regex robusto para remover emojis do texto antes de falar
                 const emojiRegex = /[\p{Extended_Pictographic}\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
 
                 try {
                     const response = await this.callGemini(textToSpeak);
                     this.aiResponse = response;
-                    // Fala apenas o texto limpo, sem emojis
                     SoundUtils.speak(response.replace(emojiRegex, '').trim());
                 } catch (error) {
                     console.error("Erro na comunicação:", error);
-                    // Fallback Inteligente com Opções
                     const fallback = this.getOfflineResponse(textToSpeak);
                     this.aiResponse = fallback;
-                    // Fala apenas o texto limpo, sem emojis
                     SoundUtils.speak(fallback.replace(emojiRegex, '').trim());
                 }
 
-                // Limpa a frase automaticamente após a resposta da Luz
-                // para que a criança possa responder à nova pergunta.
                 this.sentence = [];
-
                 this.isProcessing = false;
+                this.robotState = "IDLE";
                 this.render();
             }
 
-            // Sistema de Fallback atualizado para oferecer apenas opções válidas do app
             getOfflineResponse(text) {
                 const lowerText = text.toLowerCase();
-                
-                if (lowerText.includes("fome") || lowerText.includes("comer")) {
-                    return "Entendi, você quer comer 🍽️. Você quer Maçã 🍎 ou Biscoito 🍪?";
-                }
-                if (lowerText.includes("beber") || lowerText.includes("sede") || lowerText.includes("agua")) {
-                    return "Entendi, você quer beber 💧. Água 💧 ou Leite 🥛?";
-                }
-                if (lowerText.includes("brincar")) {
-                    return "Entendi, você quer brincar 🧸. Na Escola 🏫 ou no Parque ⛲?";
-                }
-                if (lowerText.includes("correr") || lowerText.includes("andar") || lowerText.includes("pular")) {
-                    return "Entendi, você quer se movimentar 🏃. Na Casa 🏠 ou no Parque ⛲?";
-                }
-                if (lowerText.includes("ir")) {
-                    return "Entendi, você quer ir 🚶. Para a Escola 🏫 ou Parque ⛲?";
-                }
-                if (lowerText.includes("triste") || lowerText.includes("chorar")) {
-                    return "Entendi, você está triste 😢. Quer Brincar 🧸?";
-                }
-                
-                // Resposta padrão genérica apenas confirmando leitura
+                if (lowerText.includes("fome") || lowerText.includes("comer")) return "Entendi, você quer comer 🍽️. Você quer Maçã 🍎 ou Biscoito 🍪?";
+                if (lowerText.includes("beber") || lowerText.includes("sede") || lowerText.includes("agua")) return "Entendi, você quer beber 💧. Água 💧 ou Leite 🥛?";
+                if (lowerText.includes("brincar")) return "Entendi, você quer brincar 🧸. Na Escola 🏫 ou no Parque ⛲?";
                 return `Entendi, você disse: ${text}.`;
             }
 
             async callGemini(userText) {
                 if (!API_KEY) throw new Error("No API Key");
-                
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
                 const payload = {
                     contents: [{ parts: [{ text: `A criança montou os pictogramas: '${userText}'.` }] }],
                     systemInstruction: { parts: [{ text: this.systemPrompt }] },
-                    // Temperatura baixa para respostas consistentes e obedecer a lista
                     generationConfig: { temperature: 0.2 }
                 };
-
                 const res = await fetch(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
-
-                if (!res.ok) {
-                    throw new Error("API Error: " + res.status);
-                }
-                
+                if (!res.ok) throw new Error("API Error: " + res.status);
                 const data = await res.json();
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
-                    return data.candidates[0].content.parts[0].text;
-                }
+                if (data.candidates && data.candidates[0].content.parts[0].text) return data.candidates[0].content.parts[0].text;
                 throw new Error("Formato de resposta inválido");
             }
 
@@ -570,30 +542,36 @@
                 this.render();
             }
 
+            startAnimations(element) {
+                if (this.blinkInterval) clearInterval(this.blinkInterval);
+                this.blinkInterval = setInterval(() => {
+                    if (this.isProcessing) return;
+                    if (Math.random() > 0.8) {
+                        element.innerText = "😑"; 
+                        setTimeout(() => element.innerText = "🤖", 200);
+                    }
+                }, 2000);
+            }
+
             renderHelpModal() {
                 if (!this.showHelp) return null;
-                
                 return el('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn', {}, [
                     el('div', 'bg-white rounded-3xl p-8 max-w-md m-4 shadow-2xl relative', {}, [
-                        el('button', 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold', 
-                           { text: '✕', onClick: () => this.toggleHelp() }),
+                        el('button', 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold', { text: '✕', onClick: () => this.toggleHelp() }),
                         el('h3', 'font-lilita text-2xl text-blue-500 mb-4', { text: 'Como funciona o Comunicador?' }),
                         el('div', 'space-y-4 text-gray-600 text-left', {}, [
-                            el('p', '', { text: "🧩 O comunicador usa pictogramas (imagens) para ajudar a criança a construir frases e expressar sentimentos e necessidades." }),
-                            el('p', '', { text: "🗣️ Ao tocar no botão 'Falar', a frase montada é lida em voz alta, reforçando a comunicação verbal." }),
-                            el('p', '', { text: "🤖 A robô 'Luz' entende a intenção e oferece opções (Ex: 'Bola ⚽ ou Bicicleta 🚲?') baseadas nos itens do app." }),
-                            el('p', '', { text: "💡 Isso ajuda a reduzir a frustração e estimula a socialização de forma lúdica!" })
+                            el('p', '', { text: "🧩 Toque nas figuras para montar frases." }),
+                            el('p', '', { text: "🗣️ Toque em 'Falar' para ouvir e interagir com a Robô Luz." }),
+                            el('p', '', { text: "🤖 A Luz vai responder e dar opções de brincadeiras!" })
                         ]),
-                        el('button', 'mt-6 w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-600 transition-colors', 
-                           { text: 'Entendi, vamos lá!', onClick: () => this.toggleHelp() })
+                        el('button', 'mt-6 w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-600 transition-colors', { text: 'Entendi!', onClick: () => this.toggleHelp() })
                     ])
                 ]);
             }
 
             render() {
                 this.parent.innerHTML = '';
-                const modal = this.renderHelpModal();
-                if (modal) this.parent.appendChild(modal);
+                if (this.showHelp) this.parent.appendChild(this.renderHelpModal());
 
                 const container = el('div', 'w-full max-w-6xl bg-white/90 rounded-3xl shadow-xl p-4 md:p-6 flex flex-col gap-6 relative min-h-[80vh]');
 
@@ -611,66 +589,48 @@
                 ]);
 
                 // Robot Area
-                const robotEmoji = this.isProcessing ? "⏳" : "🤖";
-                const robotAnim = this.isProcessing ? "animate-bounce" : "animate-pulse-quick";
-                
+                let robotEmoji = "🤖";
+                if (this.robotState === "THINKING") robotEmoji = "⏳";
+                const robotAnim = this.robotState === "THINKING" ? "animate-bounce" : "animate-float";
+                const robotFace = el('div', `text-6xl ${robotAnim} transition-all duration-300`, { text: robotEmoji });
+                if (this.robotState === "IDLE") this.startAnimations(robotFace);
+
                 const robotArea = el('div', 'flex flex-col md:flex-row items-center gap-4 bg-blue-50 rounded-2xl p-4 border-2 border-blue-100', {}, [
-                    el('div', `text-6xl ${robotAnim}`, { text: robotEmoji }),
+                    robotFace,
                     el('div', 'flex-1 bg-white p-4 rounded-xl rounded-tl-none shadow-sm relative min-h-[80px] flex items-center', {}, [
                         el('p', 'text-gray-700 font-medium text-lg', { text: this.aiResponse }),
                         el('div', 'absolute -left-2 top-4 w-4 h-4 bg-white transform rotate-45')
                     ])
                 ]);
 
-                // Sentence Strip
+                // Sentence Area
                 const sentenceCards = this.sentence.map(p => 
                     el('div', `flex flex-col items-center justify-center w-20 h-24 ${p.color} rounded-xl shadow-sm animate-pop-in bg-white border-b-4`, {}, [
                         el('span', 'text-3xl mb-1', { text: p.emoji }),
                         el('span', 'text-xs font-bold text-gray-600 px-1 text-center leading-tight', { text: p.label })
                     ])
                 );
-
-                if (this.sentence.length === 0) {
-                    sentenceCards.push(el('span', 'text-gray-400 italic ml-4', { text: 'Toque nas figuras abaixo para montar uma frase...' }));
-                }
+                if (this.sentence.length === 0) sentenceCards.push(el('span', 'text-gray-400 italic ml-4', { text: 'Toque nas figuras para montar uma frase...' }));
 
                 const sentenceStrip = el('div', 'bg-gray-100 rounded-2xl p-4 min-h-[100px] flex items-center justify-between gap-4 border-2 border-gray-200 shadow-inner', {}, [
                     el('div', 'flex flex-wrap gap-2 flex-1', {}, sentenceCards),
                     el('div', 'flex gap-2', {}, [
-                        el('button', 'p-3 bg-red-100 text-red-500 rounded-xl hover:bg-red-200 active:scale-95 transition-all border-b-4 border-red-200 active:border-b-0 active:translate-y-1',
-                            { text: '❌', title: 'Limpar', onClick: () => this.clear() }),
-                        el('button', `p-3 bg-green-500 text-white rounded-xl hover:bg-green-600 active:scale-95 transition-all border-b-4 border-green-700 active:border-b-0 active:translate-y-1 font-bold flex items-center gap-2 ${this.isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`,
-                            { onClick: () => this.speak() },
-                            [el('span', '', { text: '🔊' }), el('span', 'hidden md:inline', { text: 'Falar' })])
+                        el('button', 'p-3 bg-red-100 text-red-500 rounded-xl hover:bg-red-200 active:scale-95 transition-all border-b-4 border-red-200 active:border-b-0 active:translate-y-1', { text: '❌', onClick: () => this.clear() }),
+                        el('button', `p-3 bg-green-500 text-white rounded-xl hover:bg-green-600 active:scale-95 transition-all border-b-4 border-green-700 active:border-b-0 active:translate-y-1 font-bold flex items-center gap-2 ${this.isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`, 
+                            { onClick: () => this.speak() }, [el('span', '', { text: '🔊' }), el('span', 'hidden md:inline', { text: 'Falar' })])
                     ])
                 ]);
 
-                // Tabs
-                const tabs = el('div', 'flex flex-wrap gap-2 justify-center mb-2', {}, 
-                    Object.keys(PICTOGRAMS).map(cat => 
-                        el('button', `px-4 py-2 rounded-full font-bold text-sm transition-all ${cat === this.selectedCategory ? 'bg-blue-500 text-white shadow-md transform scale-105' : 'bg-white text-gray-500 hover:bg-gray-50'}`,
-                           { text: cat, onClick: () => { this.selectedCategory = cat; SoundUtils.playPop(); this.render(); } })
-                    )
-                );
-
                 // Grid
-                const grid = el('div', 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 overflow-y-auto max-h-[400px] p-2', {},
-                    PICTOGRAMS[this.selectedCategory].map(item => 
-                        el('button', `flex flex-col items-center justify-center p-3 aspect-square bg-white border-2 ${item.color.replace('bg-', 'hover:bg-').replace('border-', 'border-')} rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all active:scale-95`,
-                            { onClick: () => this.addPictogram(item) },
-                            [
-                                el('span', 'text-4xl md:text-5xl mb-2', { text: item.emoji }),
-                                el('span', 'font-bold text-gray-700 text-sm md:text-base', { text: item.label })
-                            ]
-                        )
-                    )
+                const tabs = el('div', 'flex flex-wrap gap-2 justify-center mb-2', {}, 
+                    Object.keys(PICTOGRAMS).map(cat => el('button', `px-4 py-2 rounded-full font-bold text-sm transition-all ${cat === this.selectedCategory ? 'bg-blue-500 text-white shadow-md transform scale-105' : 'bg-white text-gray-500 hover:bg-gray-50'}`, { text: cat, onClick: () => { this.selectedCategory = cat; SoundUtils.playPop(); this.render(); } }))
                 );
 
-                container.appendChild(header);
-                container.appendChild(robotArea);
-                container.appendChild(sentenceStrip);
-                container.appendChild(tabs);
-                container.appendChild(grid);
+                const grid = el('div', 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 overflow-y-auto max-h-[400px] p-2', {},
+                    PICTOGRAMS[this.selectedCategory].map(item => el('button', `flex flex-col items-center justify-center p-3 aspect-square bg-white border-2 ${item.color.replace('bg-', 'hover:bg-').replace('border-', 'border-')} rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all active:scale-95`, { onClick: () => this.addPictogram(item) }, [el('span', 'text-4xl md:text-5xl mb-2', { text: item.emoji }), el('span', 'font-bold text-gray-700 text-sm md:text-base', { text: item.label })]))
+                );
+
+                container.append(header, robotArea, sentenceStrip, tabs, grid);
                 this.parent.appendChild(container);
             }
         }
@@ -683,10 +643,9 @@
                 this.currentRound = 0;
                 this.maxRounds = 5;
                 this.gameState = "PLAYING";
-                this.currentEmotion = null;
-                this.options = [];
-                this.feedback = { message: "", type: "" };
-                this.showHelp = false;
+                
+                const savedBest = localStorage.getItem('emotionGameBestScore');
+                this.bestScore = savedBest ? parseInt(savedBest) : 0;
                 this.setupRound();
             }
 
@@ -694,119 +653,60 @@
                 if (this.currentRound >= this.maxRounds) {
                     this.gameState = "FINISHED";
                     SoundUtils.playSuccess();
+                    if (this.score > this.bestScore) {
+                        this.bestScore = this.score;
+                        localStorage.setItem('emotionGameBestScore', this.bestScore);
+                    }
+                    confettiSystem.createParticles(200);
                     return;
                 }
 
                 const target = EMOTION_LEVELS[Math.floor(Math.random() * EMOTION_LEVELS.length)];
                 this.currentEmotion = target;
-                
-                // Create options
                 let opts = [{ label: target.target, emoji: target.emoji, isCorrect: true }];
-                
-                // Add distractors
                 const distractors = [...target.distractors].sort(() => 0.5 - Math.random()).slice(0, 2);
                 distractors.forEach(emoji => opts.push({ label: "???", emoji: emoji, isCorrect: false }));
-                
-                // Shuffle
                 this.options = opts.sort(() => 0.5 - Math.random());
                 this.gameState = "PLAYING";
             }
 
             handleAnswer(option) {
                 if (this.gameState !== "PLAYING") return;
-
+                this.gameState = "FEEDBACK";
                 if (option.isCorrect) {
                     this.score++;
-                    this.gameState = "FEEDBACK";
                     this.feedback = { message: "Muito bem! 🎉", type: "success" };
                     SoundUtils.playCorrect();
                 } else {
-                    this.gameState = "FEEDBACK";
                     this.feedback = { message: "Ops! Tente de novo.", type: "error" };
                     SoundUtils.playIncorrect();
                 }
-
                 this.render();
-                setTimeout(() => {
-                    this.currentRound++;
-                    this.setupRound();
-                    this.render();
-                }, 2000);
+                setTimeout(() => { this.currentRound++; this.setupRound(); this.render(); }, 2000);
             }
 
             restart() {
-                this.score = 0;
-                this.currentRound = 0;
-                this.setupRound();
-                this.render();
-            }
-
-            toggleHelp() {
-                this.showHelp = !this.showHelp;
-                SoundUtils.playPop();
-                this.render();
-            }
-
-            renderHelpModal() {
-                if (!this.showHelp) return null;
-                
-                return el('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn', {}, [
-                    el('div', 'bg-white rounded-3xl p-8 max-w-md m-4 shadow-2xl relative', {}, [
-                        el('button', 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold', 
-                           { text: '✕', onClick: () => this.toggleHelp() }),
-                        el('h3', 'font-lilita text-2xl text-orange-500 mb-4', { text: 'Jogo das Emoções' }),
-                        el('div', 'space-y-4 text-gray-600 text-left', {}, [
-                            el('p', '', { text: "🤔 O objetivo é identificar a emoção correta baseada na pergunta (Ex: 'Quem está Feliz?')." }),
-                            el('p', '', { text: "🎭 Isso ajuda a criança a reconhecer expressões faciais e associá-las a sentimentos reais." }),
-                            el('p', '', { text: "🎉 A cada acerto, a criança recebe feedback positivo visual e sonoro para incentivar o aprendizado!" })
-                        ]),
-                        el('button', 'mt-6 w-full bg-orange-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-orange-600 transition-colors', 
-                           { text: 'Vamos jogar!', onClick: () => this.toggleHelp() })
-                    ])
-                ]);
+                this.score = 0; this.currentRound = 0; this.setupRound(); this.render();
             }
 
             render() {
                 this.parent.innerHTML = '';
-                const modal = this.renderHelpModal();
-                if (modal) this.parent.appendChild(modal);
-
                 const container = el('div', 'w-full max-w-4xl bg-white/90 rounded-3xl shadow-xl p-6 flex flex-col gap-6 text-center min-h-[60vh] justify-center relative overflow-hidden animate-fadeIn');
 
-                // Header Buttons (Back and Help)
-                container.appendChild(
-                    el('button', 'absolute top-4 left-4 px-4 py-2 bg-orange-400 border-b-4 border-orange-600 text-white font-bold rounded-xl shadow active:border-b-2 active:mt-1 flex items-center gap-2 text-sm z-20',
-                       { onClick: () => this.setView('HOME') },
-                       [el('span', '', { text: '⬅️' }), el('span', 'hidden md:block', { text: 'Voltar' })]
-                    )
-                );
+                container.appendChild(el('button', 'absolute top-4 left-4 px-4 py-2 bg-orange-400 border-b-4 border-orange-600 text-white font-bold rounded-xl shadow active:border-b-2 active:mt-1 flex items-center gap-2 text-sm z-20', { onClick: () => this.setView('HOME') }, [el('span', '', { text: '⬅️' }), el('span', 'hidden md:block', { text: 'Voltar' })]));
                 
-                container.appendChild(
-                     el('button', 'absolute top-4 right-4 w-10 h-10 rounded-full bg-orange-100 text-orange-500 font-bold text-xl hover:bg-orange-200 transition-colors flex items-center justify-center shadow-sm z-20', 
-                       { text: '?', onClick: () => this.toggleHelp() })
-                );
-
                 if (this.gameState === "FINISHED") {
                     const result = el('div', 'flex flex-col items-center gap-6 animate-tada', {}, [
                         el('span', 'text-8xl', { text: '🏆' }),
                         el('h2', 'font-lilita text-4xl text-orange-500', { text: 'Parabéns!' }),
                         el('p', 'text-2xl text-gray-600', { text: `Você acertou ${this.score} de ${this.maxRounds}!` }),
-                        el('button', 'mt-4 bg-green-500 text-white text-xl font-bold py-4 px-8 rounded-2xl shadow-lg hover:bg-green-600 transition-transform hover:scale-105',
-                           { text: 'Jogar Novamente', onClick: () => this.restart() })
+                        el('p', 'text-sm text-gray-500 font-bold', { text: `Melhor Pontuação: ${this.bestScore}` }),
+                        el('button', 'mt-4 bg-green-500 text-white text-xl font-bold py-4 px-8 rounded-2xl shadow-lg hover:bg-green-600 transition-transform hover:scale-105', { text: 'Jogar Novamente', onClick: () => this.restart() })
                     ]);
                     container.appendChild(result);
                 } else {
-                    // Progress Bar
-                    container.appendChild(
-                        el('div', 'w-full bg-gray-200 rounded-full h-4 mb-4 overflow-hidden', {}, [
-                            el('div', 'bg-green-500 h-4 transition-all duration-500', { style: `width: ${(this.currentRound / this.maxRounds) * 100}%` })
-                        ])
-                    );
-
-                    // Question
+                    container.appendChild(el('div', 'w-full bg-gray-200 rounded-full h-4 mb-4 overflow-hidden', {}, [el('div', 'bg-green-500 h-4 transition-all duration-500', { style: `width: ${(this.currentRound / this.maxRounds) * 100}%` })]));
                     container.appendChild(el('h2', 'font-lilita text-3xl md:text-4xl text-gray-700 mb-4', { text: `Quem está ${this.currentEmotion.target}?` }));
-
-                    // Options
                     const optionsDiv = el('div', 'flex flex-wrap justify-center gap-6 md:gap-10 mt-4', {}, 
                         this.options.map(opt => {
                             let extraClass = "";
@@ -814,45 +714,20 @@
                                 if (opt.isCorrect && this.feedback.type === "success") extraClass = "border-green-400 bg-green-50";
                                 else if (!opt.isCorrect && this.feedback.type === "error") extraClass = "animate-shake border-red-400";
                             }
-
-                            return el('button', 
-                                `text-7xl md:text-8xl p-6 bg-white border-4 border-orange-100 rounded-3xl shadow-md hover:scale-110 transition-transform duration-200 active:scale-95 ${extraClass}`,
-                                { text: opt.emoji, onClick: () => this.handleAnswer(opt) }
-                            );
+                            return el('button', `text-7xl md:text-8xl p-6 bg-white border-4 border-orange-100 rounded-3xl shadow-md hover:scale-110 transition-transform duration-200 active:scale-95 ${extraClass}`, { text: opt.emoji, onClick: () => this.handleAnswer(opt) });
                         })
                     );
                     container.appendChild(optionsDiv);
-
-                    // Feedback Overlay
                     if (this.gameState === "FEEDBACK") {
-                        const feedbackEl = el('div', 
-                            `absolute inset-0 flex items-center justify-center bg-white/80 z-10 font-lilita text-4xl ${this.feedback.type === "success" ? "text-green-600" : "text-orange-500"} animate-pop-in`,
-                            { text: this.feedback.message }
-                        );
-
-                        if (this.feedback.type === "success") {
-                            for (let i = 0; i < 10; i++) {
-                                const confetti = el('div', 'confetti');
-                                confetti.style.left = Math.random() * 100 + '%';
-                                confetti.style.animationDelay = Math.random() + 's';
-                                confetti.style.backgroundColor = ['#ff0000', '#00ff00', '#0000ff', '#ffff00'][Math.floor(Math.random() * 4)];
-                                feedbackEl.appendChild(confetti);
-                            }
-                        }
-                        container.appendChild(feedbackEl);
+                        container.appendChild(el('div', `absolute inset-0 flex items-center justify-center bg-white/80 z-10 font-lilita text-4xl ${this.feedback.type === "success" ? "text-green-600" : "text-orange-500"} animate-pop-in`, { text: this.feedback.message }));
                     }
                 }
-                
                 this.parent.appendChild(container);
             }
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            const appContainer = document.getElementById('app-container');
-            new App(appContainer);
-        });
-
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => new App(document.getElementById('app-container')));
     </script>
 </body>
 </html>
