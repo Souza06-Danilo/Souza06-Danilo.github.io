@@ -162,12 +162,23 @@
             ]
         };
 
+        // Dados para o Jogo Clássico
         const EMOTION_LEVELS = [
             {id: 1, target: "Feliz", emoji: "😊", distractors: ["😢", "😠", "😴"]},
             {id: 2, target: "Triste", emoji: "😢", distractors: ["😊", "😂", "😠"]},
             {id: 3, target: "Bravo", emoji: "😠", distractors: ["😊", "😴", "😮"]},
             {id: 4, target: "Surpreso", emoji: "😮", distractors: ["😠", "😢", "😴"]},
             {id: 5, target: "Amor", emoji: "😍", distractors: ["😢", "😠", "🤮"]},
+        ];
+
+        // Dados para o Modo História (Novo)
+        const EMOTION_STORIES = [
+            { text: "O João ganhou um presente muito legal no aniversário!", emotion: "Feliz", emoji: "😊", distractors: ["😢", "😠"] },
+            { text: "A sorvete da Ana caiu no chão. Puxa vida!", emotion: "Triste", emoji: "😢", distractors: ["😊", "😴"] },
+            { text: "O cachorro pegou o brinquedo do Pedro e quebrou.", emotion: "Bravo", emoji: "😠", distractors: ["😊", "😴"] },
+            { text: "A porta bateu com um barulho muito forte! BOOM!", emotion: "Surpreso", emoji: "😮", distractors: ["😴", "😊"] },
+            { text: "A Maria deu um abraço bem apertado na mamãe.", emotion: "Amor", emoji: "🥰", distractors: ["😠", "😢"] },
+            { text: "Já está muito tarde e o Lucas quer ir para a cama.", emotion: "Cansado", emoji: "😴", distractors: ["😮", "😠"] }
         ];
 
         // ==========================================
@@ -513,7 +524,6 @@
                 this.render();
             }
 
-            // Fallback Offline também mais divertido
             getOfflineResponse(text) {
                 const lowerText = text.toLowerCase();
                 if (lowerText.includes("bola") || lowerText.includes("brincar")) return "Eba! Brincar é muito legal! Vamos nos divertir! ⚽🎉";
@@ -522,8 +532,6 @@
                 if (lowerText.includes("escola")) return "Escola é lugar de aprender e brincar com os amigos! 🏫";
                 if (lowerText.includes("feliz")) return "Oba! Ver você feliz me deixa feliz também! Sorrisão! 😄";
                 if (lowerText.includes("triste")) return "Ah, não fique triste. Um abraço da Luz! 🤗";
-                
-                // Genérico se não entender, mas positivo
                 return `Que legal! Você disse: ${text}. Gostei muito! 👍`;
             }
 
@@ -533,7 +541,6 @@
                 const payload = {
                     contents: [{ parts: [{ text: `A criança montou os pictogramas: '${userText}'.` }] }],
                     systemInstruction: { parts: [{ text: this.systemPrompt }] },
-                    // Temperatura aumentada para 0.6 para dar mais criatividade e "vida" à resposta
                     generationConfig: { temperature: 0.6 }
                 };
                 const res = await fetch(url, {
@@ -654,17 +661,26 @@
                 this.currentRound = 0;
                 this.maxRounds = 5;
                 this.gameState = "PLAYING";
+                this.mode = "MENU"; // MENU, CLASSIC, STORY
+                this.showHelp = false;
                 
                 const savedBest = localStorage.getItem('emotionGameBestScore');
                 this.bestScore = savedBest ? parseInt(savedBest) : 0;
+            }
+
+            setMode(mode) {
+                this.mode = mode;
+                this.score = 0;
+                this.currentRound = 0;
                 this.setupRound();
+                this.render();
             }
 
             setupRound() {
                 if (this.currentRound >= this.maxRounds) {
                     this.gameState = "FINISHED";
                     SoundUtils.playSuccess();
-                    if (this.score > this.bestScore) {
+                    if (this.mode === 'CLASSIC' && this.score > this.bestScore) {
                         this.bestScore = this.score;
                         localStorage.setItem('emotionGameBestScore', this.bestScore);
                     }
@@ -672,12 +688,25 @@
                     return;
                 }
 
-                const target = EMOTION_LEVELS[Math.floor(Math.random() * EMOTION_LEVELS.length)];
-                this.currentEmotion = target;
-                let opts = [{ label: target.target, emoji: target.emoji, isCorrect: true }];
-                const distractors = [...target.distractors].sort(() => 0.5 - Math.random()).slice(0, 2);
-                distractors.forEach(emoji => opts.push({ label: "???", emoji: emoji, isCorrect: false }));
-                this.options = opts.sort(() => 0.5 - Math.random());
+                if (this.mode === 'CLASSIC') {
+                    const target = EMOTION_LEVELS[Math.floor(Math.random() * EMOTION_LEVELS.length)];
+                    this.currentEmotion = target;
+                    let opts = [{ label: target.target, emoji: target.emoji, isCorrect: true }];
+                    const distractors = [...target.distractors].sort(() => 0.5 - Math.random()).slice(0, 2);
+                    distractors.forEach(emoji => opts.push({ label: "???", emoji: emoji, isCorrect: false }));
+                    this.options = opts.sort(() => 0.5 - Math.random());
+                } else if (this.mode === 'STORY') {
+                    const target = EMOTION_STORIES[Math.floor(Math.random() * EMOTION_STORIES.length)];
+                    this.currentStory = target;
+                    let opts = [{ label: target.emotion, emoji: target.emoji, isCorrect: true }];
+                    const distractors = [...target.distractors].sort(() => 0.5 - Math.random()).slice(0, 2);
+                    distractors.forEach(emoji => opts.push({ label: "???", emoji: emoji, isCorrect: false }));
+                    this.options = opts.sort(() => 0.5 - Math.random());
+                    
+                    // Fala a história automaticamente após 500ms
+                    setTimeout(() => SoundUtils.speak(this.currentStory.text), 500);
+                }
+
                 this.gameState = "PLAYING";
             }
 
@@ -693,31 +722,90 @@
                     SoundUtils.playIncorrect();
                 }
                 this.render();
-                setTimeout(() => { this.currentRound++; this.setupRound(); this.render(); }, 2000);
+                setTimeout(() => { this.currentRound++; this.setupRound(); this.render(); }, 2500);
             }
 
             restart() {
                 this.score = 0; this.currentRound = 0; this.setupRound(); this.render();
             }
 
+            toggleHelp() {
+                this.showHelp = !this.showHelp;
+                SoundUtils.playPop();
+                this.render();
+            }
+
+            renderHelpModal() {
+                if (!this.showHelp) return null;
+                return el('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn', {}, [
+                    el('div', 'bg-white rounded-3xl p-8 max-w-md m-4 shadow-2xl relative', {}, [
+                        el('button', 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold', { text: '✕', onClick: () => this.toggleHelp() }),
+                        el('h3', 'font-lilita text-2xl text-orange-500 mb-4', { text: 'Jogos das Emoções' }),
+                        el('div', 'space-y-4 text-gray-600 text-left', {}, [
+                            el('h4', 'font-bold text-orange-400', { text: "1. Identificar 🤔" }),
+                            el('p', 'text-sm mb-2', { text: "Aprenda a reconhecer as expressões faciais (Feliz, Triste, Bravo)." }),
+                            el('h4', 'font-bold text-orange-400', { text: "2. Histórias 📖" }),
+                            el('p', 'text-sm', { text: "Ouça uma pequena história e descubra como o personagem se sente!" }),
+                            el('p', 'mt-4 italic text-xs', { text: "Dica: Toque no botão de som para ouvir a história novamente." })
+                        ]),
+                        el('button', 'mt-6 w-full bg-orange-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-orange-600 transition-colors', { text: 'Entendi, vamos jogar!', onClick: () => this.toggleHelp() })
+                    ])
+                ]);
+            }
+
             render() {
                 this.parent.innerHTML = '';
+                if (this.showHelp) this.parent.appendChild(this.renderHelpModal());
+
                 const container = el('div', 'w-full max-w-4xl bg-white/90 rounded-3xl shadow-xl p-6 flex flex-col gap-6 text-center min-h-[60vh] justify-center relative overflow-hidden animate-fadeIn');
 
-                container.appendChild(el('button', 'absolute top-4 left-4 px-4 py-2 bg-orange-400 border-b-4 border-orange-600 text-white font-bold rounded-xl shadow active:border-b-2 active:mt-1 flex items-center gap-2 text-sm z-20', { onClick: () => this.setView('HOME') }, [el('span', '', { text: '⬅️' }), el('span', 'hidden md:block', { text: 'Voltar' })]));
+                // Header Buttons
+                container.appendChild(el('button', 'absolute top-4 left-4 px-4 py-2 bg-orange-400 border-b-4 border-orange-600 text-white font-bold rounded-xl shadow active:border-b-2 active:mt-1 flex items-center gap-2 text-sm z-20', { onClick: () => { if(this.mode !== 'MENU') { this.mode = 'MENU'; this.render(); } else { this.setView('HOME'); } } }, [el('span', '', { text: '⬅️' }), el('span', 'hidden md:block', { text: this.mode === 'MENU' ? 'Voltar' : 'Menu' })]));
                 
-                if (this.gameState === "FINISHED") {
+                container.appendChild(el('button', 'absolute top-4 right-4 w-10 h-10 rounded-full bg-orange-100 text-orange-500 font-bold text-xl hover:bg-orange-200 transition-colors flex items-center justify-center shadow-sm z-20', { text: '?', onClick: () => this.toggleHelp() }));
+
+                if (this.mode === 'MENU') {
+                    // SELEÇÃO DE MODO
+                    container.appendChild(el('h2', 'font-lilita text-4xl text-orange-500 mb-8', { text: 'Escolha um Jogo' }));
+                    const menuGrid = el('div', 'flex flex-col md:flex-row justify-center gap-8 items-center', {}, [
+                        el('button', 'btn-3d w-64 h-56 bg-white border-4 border-orange-200 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-orange-400 transition-all', 
+                           { onClick: () => this.setMode('CLASSIC') }, 
+                           [el('span', 'text-6xl btn-3d-icon', {text: '🤔'}), el('span', 'font-lilita text-2xl text-orange-500 btn-3d-text', {text: 'Identificar'})]
+                        ),
+                        el('button', 'btn-3d w-64 h-56 bg-white border-4 border-purple-200 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-purple-400 transition-all', 
+                           { onClick: () => this.setMode('STORY') }, 
+                           [el('span', 'text-6xl btn-3d-icon', {text: '📖'}), el('span', 'font-lilita text-2xl text-purple-500 btn-3d-text', {text: 'Histórias'})]
+                        )
+                    ]);
+                    container.appendChild(el('div', 'perspective-container', {}, [menuGrid]));
+
+                } else if (this.gameState === "FINISHED") {
+                    // TELA DE VITÓRIA
                     const result = el('div', 'flex flex-col items-center gap-6 animate-tada', {}, [
                         el('span', 'text-8xl', { text: '🏆' }),
                         el('h2', 'font-lilita text-4xl text-orange-500', { text: 'Parabéns!' }),
                         el('p', 'text-2xl text-gray-600', { text: `Você acertou ${this.score} de ${this.maxRounds}!` }),
-                        el('p', 'text-sm text-gray-500 font-bold', { text: `Melhor Pontuação: ${this.bestScore}` }),
                         el('button', 'mt-4 bg-green-500 text-white text-xl font-bold py-4 px-8 rounded-2xl shadow-lg hover:bg-green-600 transition-transform hover:scale-105', { text: 'Jogar Novamente', onClick: () => this.restart() })
                     ]);
                     container.appendChild(result);
+
                 } else {
+                    // JOGO EM ANDAMENTO
                     container.appendChild(el('div', 'w-full bg-gray-200 rounded-full h-4 mb-4 overflow-hidden', {}, [el('div', 'bg-green-500 h-4 transition-all duration-500', { style: `width: ${(this.currentRound / this.maxRounds) * 100}%` })]));
-                    container.appendChild(el('h2', 'font-lilita text-3xl md:text-4xl text-gray-700 mb-4', { text: `Quem está ${this.currentEmotion.target}?` }));
+                    
+                    if (this.mode === 'CLASSIC') {
+                        container.appendChild(el('h2', 'font-lilita text-3xl md:text-4xl text-gray-700 mb-4', { text: `Quem está ${this.currentEmotion.target}?` }));
+                    } else if (this.mode === 'STORY') {
+                        container.appendChild(el('div', 'bg-purple-50 p-6 rounded-2xl mb-4 border-2 border-purple-100 flex flex-col items-center gap-4', {}, [
+                            el('p', 'text-xl md:text-2xl font-medium text-gray-700', { text: this.currentStory.text }),
+                            el('button', 'flex items-center gap-2 bg-purple-100 text-purple-600 px-4 py-2 rounded-full font-bold hover:bg-purple-200', 
+                               { onClick: () => SoundUtils.speak(this.currentStory.text) },
+                               [el('span', '', {text: '🔊'}), el('span', '', {text: 'Ouvir de novo'})]
+                            )
+                        ]));
+                        container.appendChild(el('h2', 'font-lilita text-2xl text-gray-500', { text: 'Como ele se sente?' }));
+                    }
+
                     const optionsDiv = el('div', 'flex flex-wrap justify-center gap-6 md:gap-10 mt-4', {}, 
                         this.options.map(opt => {
                             let extraClass = "";
