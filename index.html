@@ -1,26 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- CONFIGURAÇÕES DE METADADOS E PWA -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#87CEEB" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="description" content="Mundo Colorido - App de comunicação e emoções para autismo" />
-    
     <title>Mundo Colorido</title>
-    
-    <!-- ÍCONES E MANIFESTO -->
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/4150/4150367.png" />
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4150/4150367.png" />
-
-    <!-- ESTILOS (CSS/TAILWIND) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Lilita+One&display=swap" rel="stylesheet">
-    
     <style>
-        /* ESTILOS VISUAIS DO FRONTEND */
         body {
             font-family: 'Nunito', sans-serif;
             background-color: #87CEEB;
@@ -31,89 +23,247 @@
             -webkit-tap-highlight-color: transparent;
         }
         .font-lilita { font-family: 'Lilita One', cursive; }
-        .title-stroked {
-            -webkit-text-stroke: 4px #4A4A4A;
-            text-shadow: 6px 6px 0px rgba(0,0,0,0.15);
-        }
-        .subtitle-stroked {
-            -webkit-text-stroke: 2px #4A4A4A;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
-        }
-
-        /* ANIMAÇÕES CSS */
+        .title-stroked { -webkit-text-stroke: 4px #4A4A4A; text-shadow: 6px 6px 0px rgba(0,0,0,0.15); }
+        .subtitle-stroked { -webkit-text-stroke: 2px #4A4A4A; text-shadow: 2px 2px 0px rgba(0,0,0,0.2); }
         @keyframes pop { 0% { transform: scale(0.9); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .animate-pop { animation: pop 0.3s ease-out; }
-        
         @keyframes pop-in { 0% { transform: scale(0.8); opacity: 0; } 80% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); } }
         .animate-pop-in { animation: pop-in 0.4s ease-out forwards; }
-        
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
         .animate-shake { animation: shake 0.4s ease-in-out; }
-        
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         .animate-pulse-quick { animation: pulse 1.5s ease-in-out infinite; }
-        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-        
         @keyframes float-idle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         .animate-float { animation: float-idle 3s ease-in-out infinite; }
-        
         @keyframes tada { from { transform: scale3d(1, 1, 1); } 10%, 20% { transform: scale3d(.95, .95, .95) rotate3d(0, 0, 1, -3deg); } 30%, 50%, 70%, 90% { transform: scale3d(1.05, 1.05, 1.05) rotate3d(0, 0, 1, 3deg); } 40%, 60%, 80% { transform: scale3d(1.05, 1.05, 1.05) rotate3d(0, 0, 1, -3deg); } to { transform: scale3d(1, 1, 1); } }
         .animate-tada { animation: tada 1s; }
-
-        /* ESTILOS DO BOTÃO 3D */
         .perspective-container { perspective: 800px; }
-        .btn-3d {
-            position: relative; transform-style: preserve-3d; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            will-change: transform; backface-visibility: hidden;
-        }
-        .btn-3d::before {
-            content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0));
-            border-radius: 1rem; transform: translateZ(25px); pointer-events: none;
-            transition: opacity 0.3s ease; opacity: 0;
-        }
+        .btn-3d { position: relative; transform-style: preserve-3d; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; backface-visibility: hidden; }
+        .btn-3d::before { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0)); border-radius: 1rem; transform: translateZ(25px); pointer-events: none; transition: opacity 0.3s ease; opacity: 0; }
         .perspective-container:hover .btn-3d { transform: rotateY(-10deg) rotateX(10deg) scale(1.05); box-shadow: 10px 15px 30px rgba(0,0,0,0.2); }
         .perspective-container:hover .btn-3d::before { opacity: 1; }
         .btn-3d-icon, .btn-3d-text { transform: translateZ(50px); text-shadow: 2px 2px 10px rgba(0,0,0,0.15); }
         .btn-3d:active { transform: rotateY(0) rotateX(0) scale(0.95) !important; transition: transform 0.1s ease; }
-        
-        /* OVERLAYS */
         #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+
+        /* ── NOVO LOADER ── */
         #loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #87CEEB; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease;
+            position: fixed; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-end; padding-bottom: 10vh;
+            background: linear-gradient(180deg, #87CEEB 0%, #B8E4F9 60%, #D4EEF9 100%);
+            z-index: 9999; transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        .loader {
-            border: 8px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top: 8px solid #fff;
-            width: 60px; height: 60px; animation: spin 1s linear infinite; margin-bottom: 20px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #loading-overlay.fade-out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+        .loader-scene { position: absolute; inset: 0; overflow: hidden; }
+        .loader-sun { position: absolute; top: 6vh; left: 50%; transform: translateX(-50%); width: clamp(70px,18vw,110px); height: clamp(70px,18vw,110px); background: radial-gradient(circle, #FFF176 20%, #FFD93D 55%, #FFB347 100%); border-radius: 50%; box-shadow: 0 0 0 8px rgba(255,217,61,.25), 0 0 0 18px rgba(255,217,61,.12); animation: loaderSunFloat 4s ease-in-out infinite; }
+        @keyframes loaderSunFloat { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
+        .loader-cloud { position: absolute; background: white; border-radius: 50px; opacity: .88; }
+        .loader-cloud::before,.loader-cloud::after { content:''; position:absolute; background:white; border-radius:50%; }
+        .loader-cloud-1 { width:clamp(80px,22vw,130px); height:clamp(30px,8vw,48px); top:18vh; left:-5%; animation:cloudDrift 28s linear infinite; }
+        .loader-cloud-1::before { width:55%; height:180%; top:-80%; left:15%; }
+        .loader-cloud-1::after  { width:40%; height:150%; top:-65%; left:45%; }
+        .loader-cloud-2 { width:clamp(60px,16vw,100px); height:clamp(22px,6vw,36px); top:26vh; right:-5%; animation:cloudDrift 22s linear infinite reverse; animation-delay:-8s; }
+        .loader-cloud-2::before { width:50%; height:180%; top:-80%; left:20%; }
+        .loader-cloud-2::after  { width:35%; height:145%; top:-60%; left:45%; }
+        @keyframes cloudDrift { from{transform:translateX(0)} to{transform:translateX(110vw)} }
+        .loader-butterfly { position:absolute; font-size:clamp(16px,4vw,24px); animation:butterflyFly 8s ease-in-out infinite; }
+        .loader-butterfly-1 { top:35vh; left:8%; }
+        .loader-butterfly-2 { top:42vh; right:10%; animation-delay:-3s; font-size:clamp(12px,3vw,18px); }
+        @keyframes butterflyFly { 0%{transform:translate(0,0) rotate(-5deg)} 25%{transform:translate(15px,-20px) rotate(5deg)} 50%{transform:translate(5px,10px) rotate(-3deg)} 75%{transform:translate(-10px,-8px) rotate(4deg)} 100%{transform:translate(0,0) rotate(-5deg)} }
+        .loader-flowers { position:absolute; bottom:14vh; width:100%; display:flex; justify-content:space-around; padding:0 8%; }
+        .loader-flower { display:flex; flex-direction:column; align-items:center; animation:flowerBob 2s ease-in-out infinite; }
+        .loader-flower:nth-child(2){animation-delay:.3s} .loader-flower:nth-child(3){animation-delay:.6s} .loader-flower:nth-child(4){animation-delay:.9s}
+        @keyframes flowerBob { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-6px) rotate(2deg)} }
+        .loader-flower-head { font-size:clamp(20px,6vw,34px); line-height:1; }
+        .loader-flower-stem { width:2px; height:clamp(16px,4vw,24px); background:#4A9E55; border-radius:1px; }
+        .loader-ground { position:absolute; bottom:0; left:0; right:0; height:18vh; background:linear-gradient(180deg,#6BCB77 0%,#4A9E55 100%); border-radius:50% 50% 0 0/12% 12% 0 0; }
+        .loader-content { position:relative; z-index:10; display:flex; flex-direction:column; align-items:center; gap:1.2rem; width:90%; max-width:380px; }
+        .loader-logo { text-align:center; animation:logoAppear .8s cubic-bezier(.34,1.56,.64,1) both; }
+        @keyframes logoAppear { from{opacity:0;transform:scale(.6) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+        .loader-emoji { font-size:clamp(56px,16vw,88px); line-height:1; filter:drop-shadow(0 4px 12px rgba(0,0,0,.12)); animation:logoFloat 3s ease-in-out infinite; }
+        @keyframes logoFloat { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-10px) rotate(3deg)} }
+        .loader-title { font-family:'Lilita One',cursive; font-size:clamp(1.6rem,6vw,2.2rem); color:#1a5276; text-shadow:0 2px 8px rgba(255,255,255,.8); margin-top:.4rem; }
+        .loader-subtitle { font-size:clamp(.85rem,3vw,1rem); color:#2980b9; font-weight:700; margin-top:.2rem; }
+        .loader-card { background:rgba(255,255,255,.72); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-radius:20px; padding:1.2rem 1.5rem; width:100%; box-shadow:0 8px 32px rgba(41,128,185,.15); border:1.5px solid rgba(255,255,255,.8); animation:cardAppear .9s cubic-bezier(.34,1.56,.64,1) .2s both; }
+        @keyframes cardAppear { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        .loader-status-msg { font-size:clamp(.9rem,3.5vw,1rem); font-weight:700; color:#1a5276; text-align:center; margin-bottom:.75rem; min-height:1.4em; transition:opacity .3s ease; }
+        .loader-track { width:100%; height:14px; background:rgba(255,255,255,.35); border-radius:99px; overflow:hidden; box-shadow:inset 0 2px 4px rgba(0,0,0,.08); }
+        .loader-bar { height:100%; border-radius:99px; background:linear-gradient(90deg,#FFD93D,#FF6B6B,#C77DFF,#6BCB77); background-size:200% 100%; width:0%; transition:width .4s cubic-bezier(.25,.46,.45,.94); animation:barShimmer 2s linear infinite; }
+        @keyframes barShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .loader-pct { text-align:right; font-size:.78rem; font-weight:700; color:#2980b9; margin-top:.4rem; }
+        .loader-stars { display:flex; justify-content:center; gap:.6rem; margin-top:.8rem; }
+        .loader-star { font-size:clamp(16px,5vw,22px); opacity:.25; transform:scale(.7); transition:opacity .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1); }
+        .loader-star.lit { opacity:1; transform:scale(1); animation:starPop .4s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes starPop { 0%{transform:scale(.5)} 60%{transform:scale(1.3)} 100%{transform:scale(1)} }
+        .loader-conn { display:flex; align-items:center; gap:6px; font-size:.72rem; font-weight:600; color:#2980b9; margin-top:.8rem; justify-content:center; opacity:.8; }
+        .loader-conn-dot { width:7px; height:7px; border-radius:50%; background:#6BCB77; animation:dotPulse 2s ease-in-out infinite; }
+        .loader-conn-dot.offline { background:#FF6B6B; animation:none; }
+        @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.7)} }
+        #btn-sound { position:fixed; top:14px; right:14px; z-index:10001; width:44px; height:44px; border-radius:50%; border:none; background:rgba(255,255,255,.75); backdrop-filter:blur(8px); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.12); transition:transform .15s ease; }
+        #btn-sound:active { transform:scale(.9); }
+        :focus-visible { outline:3px solid #FFD93D; outline-offset:3px; }
+        @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+        #offline-badge { display:none; position:fixed; bottom:16px; left:50%; transform:translateX(-50%); background:#FF6B6B; color:white; font-family:'Nunito',sans-serif; font-weight:700; font-size:.8rem; padding:6px 16px; border-radius:99px; z-index:500; box-shadow:0 2px 8px rgba(0,0,0,.2); }
+        #offline-badge.show { display:block; }
     </style>
 </head>
 <body>
-    <!-- ESTRUTURA BASE DO FRONTEND -->
-    
-    <!-- Tela de Carregamento -->
-    <div id="loading-overlay">
-        <div class="loader"></div>
-        <h2 class="font-lilita text-2xl text-white tracking-wider">Carregando o Mundo Colorido...</h2>
+
+    <!-- NOVO LOADER ANIMADO -->
+    <div id="loading-overlay" role="status" aria-live="polite" aria-label="Carregando o Mundo Colorido">
+        <div class="loader-scene" aria-hidden="true">
+            <div class="loader-sun"></div>
+            <div class="loader-cloud loader-cloud-1"></div>
+            <div class="loader-cloud loader-cloud-2"></div>
+            <div class="loader-butterfly loader-butterfly-1">🦋</div>
+            <div class="loader-butterfly loader-butterfly-2">🦋</div>
+            <div class="loader-flowers">
+                <div class="loader-flower"><div class="loader-flower-head">🌸</div><div class="loader-flower-stem"></div></div>
+                <div class="loader-flower"><div class="loader-flower-head">🌼</div><div class="loader-flower-stem"></div></div>
+                <div class="loader-flower"><div class="loader-flower-head">🌺</div><div class="loader-flower-stem"></div></div>
+                <div class="loader-flower"><div class="loader-flower-head">🌷</div><div class="loader-flower-stem"></div></div>
+            </div>
+            <div class="loader-ground"></div>
+        </div>
+        <button id="btn-sound" aria-label="Ativar ou desativar sons">🔊</button>
+        <div class="loader-content">
+            <div class="loader-logo" aria-hidden="true">
+                <div class="loader-emoji">🌈</div>
+                <h1 class="loader-title">Mundo Colorido</h1>
+                <p class="loader-subtitle">Um lugar especial para você 💛</p>
+            </div>
+            <div class="loader-card" aria-hidden="true">
+                <p class="loader-status-msg" id="loader-msg">Preparando as cores… 🎨</p>
+                <div class="loader-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="loader-track">
+                    <div class="loader-bar" id="loader-bar"></div>
+                </div>
+                <div class="loader-pct" id="loader-pct">0%</div>
+                <div class="loader-stars">
+                    <span class="loader-star" id="star-1">⭐</span>
+                    <span class="loader-star" id="star-2">⭐</span>
+                    <span class="loader-star" id="star-3">⭐</span>
+                    <span class="loader-star" id="star-4">⭐</span>
+                    <span class="loader-star" id="star-5">⭐</span>
+                </div>
+                <div class="loader-conn">
+                    <div class="loader-conn-dot" id="conn-dot"></div>
+                    <span id="conn-label">Conectado</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Canvas para Efeitos Especiais (Confetes) -->
+    <!-- BADGE OFFLINE -->
+    <div id="offline-badge" role="alert">📡 Sem internet — modo offline</div>
+
+    <!-- CANVAS CONFETES -->
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Container Principal da Aplicação -->
+    <!-- CONTAINER PRINCIPAL -->
     <div id="app-container" class="min-h-screen w-full flex flex-col items-center text-gray-800"></div>
 
-    <!-- FUNÇÕES JAVASCRIPT (LÓGICA DO APP) -->
     <script>
-        // ==========================================
-        // CONFIGURAÇÕES E DADOS
-        // ==========================================
+    // ── LOADER ──────────────────────────────────────────────
+    (function () {
+        var MESSAGES = [
+            { pct: 0,  text: 'Preparando as cores… 🎨' },
+            { pct: 20, text: 'Buscando as emoções… 😊' },
+            { pct: 40, text: 'Plantando as flores… 🌸' },
+            { pct: 60, text: 'Pintando o arco-íris… 🌈' },
+            { pct: 80, text: 'Quase lá! ✨' },
+            { pct: 95, text: 'Entrando no mundo colorido… 🚀' },
+        ];
+        var STAR_AT = [20, 40, 60, 80, 100];
+        var progress = 0, soundOn = true, audioCtx = null;
+        var barEl    = document.getElementById('loader-bar');
+        var trackEl  = document.getElementById('loader-track');
+        var pctEl    = document.getElementById('loader-pct');
+        var msgEl    = document.getElementById('loader-msg');
+        var stars    = [1,2,3,4,5].map(function(i){ return document.getElementById('star-'+i); });
+        var connDot  = document.getElementById('conn-dot');
+        var connLbl  = document.getElementById('conn-label');
+        var btnSound = document.getElementById('btn-sound');
+
+        function getCtx() {
+            if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} }
+            return audioCtx;
+        }
+        function tone(freq, dur, vol) {
+            if (!soundOn) return;
+            var ctx = getCtx(); if (!ctx) return;
+            try {
+                var o = ctx.createOscillator(), g = ctx.createGain();
+                o.connect(g); g.connect(ctx.destination);
+                o.frequency.value = freq;
+                g.gain.setValueAtTime(vol||0.15, ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+                o.start(); o.stop(ctx.currentTime + dur);
+            } catch(e){}
+        }
+        function starSound() {
+            tone(523,0.18,0.14);
+            setTimeout(function(){ tone(659,0.18,0.11); },80);
+            setTimeout(function(){ tone(784,0.22,0.09); },160);
+        }
+        function successSound() {
+            [523,659,784,1047].forEach(function(f,i){ setTimeout(function(){ tone(f,0.22,0.13); },i*100); });
+        }
+        function setProgress(val) {
+            progress = Math.min(100, Math.max(0, val));
+            barEl.style.width = progress + '%';
+            pctEl.textContent = Math.round(progress) + '%';
+            trackEl.setAttribute('aria-valuenow', Math.round(progress));
+            var phase = null;
+            for (var i = MESSAGES.length-1; i >= 0; i--) { if (progress >= MESSAGES[i].pct) { phase = MESSAGES[i]; break; } }
+            if (phase && msgEl.textContent !== phase.text) {
+                msgEl.style.opacity = '0';
+                setTimeout(function(){ msgEl.textContent = phase.text; msgEl.style.opacity = '1'; }, 200);
+            }
+            STAR_AT.forEach(function(t,i) {
+                if (progress >= t && !stars[i].classList.contains('lit')) { stars[i].classList.add('lit'); starSound(); }
+            });
+            if (progress >= 100) setTimeout(showApp, 400);
+        }
+        function showApp() {
+            successSound();
+            if ('vibrate' in navigator) navigator.vibrate([80,40,80,40,120]);
+            var overlay = document.getElementById('loading-overlay');
+            overlay.classList.add('fade-out');
+            setTimeout(function(){ overlay.style.display = 'none'; }, 700);
+        }
+        function updateConn() {
+            var online = navigator.onLine;
+            connDot.classList.toggle('offline', !online);
+            connLbl.textContent = online ? 'Conectado' : 'Modo offline';
+            var badge = document.getElementById('offline-badge');
+            if (badge) badge.classList.toggle('show', !online);
+        }
+        window.addEventListener('online', updateConn);
+        window.addEventListener('offline', updateConn);
+        updateConn();
+        btnSound.addEventListener('click', function() {
+            soundOn = !soundOn;
+            btnSound.textContent = soundOn ? '🔊' : '🔇';
+            btnSound.setAttribute('aria-label', soundOn ? 'Desativar som' : 'Ativar som');
+            getCtx(); if (soundOn) tone(440,0.15,0.12);
+        });
+        var steps = [{t:300,v:20},{t:700,v:45},{t:1200,v:65},{t:1700,v:80},{t:2200,v:90}];
+        steps.forEach(function(s){ setTimeout(function(){ setProgress(s.v); }, s.t); });
+        window._loaderFinish = function() { setProgress(100); };
+    })();
+
+    // ── SERVICE WORKER ──────────────────────────────────────
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js')
+                .then(function(r){ console.log('[SW] Registrado:', r.scope); })
+                .catch(function(e){ console.warn('[SW] Erro:', e); });
+        });
+    }
+
+    // ── APP ─────────────────────────────────────────────────
         const API_KEY = "AIzaSyCShU4DBkhKMxpG5fCGM9kFHUf0A_vaFnY";
 
         const PICTOGRAMS = {
@@ -162,7 +312,6 @@
             ]
         };
 
-        // Dados para o Jogo Clássico
         const EMOTION_LEVELS = [
             {id: 1, target: "Feliz", emoji: "😊", distractors: ["😢", "😠", "😴"]},
             {id: 2, target: "Triste", emoji: "😢", distractors: ["😊", "😂", "😠"]},
@@ -171,7 +320,6 @@
             {id: 5, target: "Amor", emoji: "😍", distractors: ["😢", "😠", "🤮"]},
         ];
 
-        // Dados para o Modo História (Novo)
         const EMOTION_STORIES = [
             { text: "O João ganhou um presente muito legal no aniversário!", emotion: "Feliz", emoji: "😊", distractors: ["😢", "😠"] },
             { text: "A sorvete da Ana caiu no chão. Puxa vida!", emotion: "Triste", emoji: "😢", distractors: ["😊", "😴"] },
@@ -181,42 +329,20 @@
             { text: "Já está muito tarde e o Lucas quer ir para a cama.", emotion: "Cansado", emoji: "😴", distractors: ["😮", "😠"] }
         ];
 
-        // ==========================================
-        // UTILITÁRIOS E FUNÇÕES AUXILIARES
-        // ==========================================
-
-        /**
-         * Função Helper (el) - Construtor de Elementos HTML
-         * Cria elementos do DOM de forma programática.
-         */
         function el(tag, className = "", props = {}, children = []) {
             const element = document.createElement(tag);
             if (className) element.className = className;
-            
             for (const [key, value] of Object.entries(props)) {
-                if (key === 'text') {
-                    element.innerText = value;
-                } else if (key === 'style') {
-                    element.setAttribute('style', value);
-                } else if (key.startsWith('on') && typeof value === 'function') {
-                    element.addEventListener(key.substring(2).toLowerCase(), value);
-                } else {
-                    element.setAttribute(key, value);
-                }
+                if (key === 'text') { element.innerText = value; }
+                else if (key === 'style') { element.setAttribute('style', value); }
+                else if (key.startsWith('on') && typeof value === 'function') { element.addEventListener(key.substring(2).toLowerCase(), value); }
+                else { element.setAttribute(key, value); }
             }
-
-            if (Array.isArray(children)) {
-                children.forEach(child => { if (child) element.appendChild(child); });
-            } else if (children instanceof HTMLElement) {
-                element.appendChild(children);
-            }
-
+            if (Array.isArray(children)) { children.forEach(child => { if (child) element.appendChild(child); }); }
+            else if (children instanceof HTMLElement) { element.appendChild(children); }
             return element;
         }
 
-        /**
-         * Sistema de Confetes (Canvas API)
-         */
         class ConfettiSystem {
             constructor() {
                 this.canvas = document.getElementById('confetti-canvas');
@@ -226,606 +352,308 @@
                 window.addEventListener('resize', () => this.resize());
                 this.animationId = null;
             }
-
-            resize() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
-            }
-
+            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; }
             createParticles(count = 100) {
                 const colors = ['#FFD700', '#FF6347', '#87CEEB', '#90EE90', '#FF69B4'];
                 for (let i = 0; i < count; i++) {
-                    this.particles.push({
-                        x: window.innerWidth / 2,
-                        y: window.innerHeight / 2,
-                        vx: (Math.random() - 0.5) * 20,
-                        vy: (Math.random() - 0.5) * 20 - 5,
-                        size: Math.random() * 10 + 5,
-                        color: colors[Math.floor(Math.random() * colors.length)],
-                        rotation: Math.random() * 360,
-                        rotationSpeed: (Math.random() - 0.5) * 10,
-                        opacity: 1
-                    });
+                    this.particles.push({ x: window.innerWidth/2, y: window.innerHeight/2, vx: (Math.random()-0.5)*20, vy: (Math.random()-0.5)*20-5, size: Math.random()*10+5, color: colors[Math.floor(Math.random()*colors.length)], rotation: Math.random()*360, rotationSpeed: (Math.random()-0.5)*10, opacity: 1 });
                 }
                 if (!this.animationId) this.animate();
             }
-
             animate() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 this.particles.forEach((p, index) => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += 0.5; // Gravidade
-                    p.rotation += p.rotationSpeed;
-                    p.opacity -= 0.01;
-
-                    this.ctx.save();
-                    this.ctx.translate(p.x, p.y);
-                    this.ctx.rotate((p.rotation * Math.PI) / 180);
-                    this.ctx.globalAlpha = p.opacity;
-                    this.ctx.fillStyle = p.color;
-                    this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-                    this.ctx.restore();
-
-                    if (p.opacity <= 0) this.particles.splice(index, 1);
+                    p.x+=p.vx; p.y+=p.vy; p.vy+=0.5; p.rotation+=p.rotationSpeed; p.opacity-=0.01;
+                    this.ctx.save(); this.ctx.translate(p.x,p.y); this.ctx.rotate((p.rotation*Math.PI)/180);
+                    this.ctx.globalAlpha=p.opacity; this.ctx.fillStyle=p.color;
+                    this.ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size); this.ctx.restore();
+                    if (p.opacity<=0) this.particles.splice(index,1);
                 });
-
-                if (this.particles.length > 0) {
-                    this.animationId = requestAnimationFrame(() => this.animate());
-                } else {
-                    this.animationId = null;
-                }
+                if (this.particles.length>0) { this.animationId=requestAnimationFrame(()=>this.animate()); }
+                else { this.animationId=null; }
             }
         }
         const confettiSystem = new ConfettiSystem();
 
-        /**
-         * Gerenciador de Áudio e Voz (Web Audio API + SpeechSynthesis)
-         */
         class SoundUtils {
             static get context() {
-                if (!this._context) {
-                    this._context = new (window.AudioContext || window.webkitAudioContext)();
-                }
+                if (!this._context) { this._context = new (window.AudioContext || window.webkitAudioContext)(); }
                 return this._context;
             }
-
-            static playTone(type, frequency, duration, volume = 0.5, startTime = 0) {
+            static playTone(type, frequency, duration, volume=0.5, startTime=0) {
                 const ctx = this.context;
-                if (ctx.state === 'suspended') ctx.resume();
-
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = type;
-                osc.frequency.setValueAtTime(frequency, ctx.currentTime + startTime);
-                
-                gain.gain.setValueAtTime(volume, ctx.currentTime + startTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + startTime + duration);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(ctx.currentTime + startTime);
-                osc.stop(ctx.currentTime + startTime + duration);
+                if (ctx.state==='suspended') ctx.resume();
+                const osc=ctx.createOscillator(), gain=ctx.createGain();
+                osc.type=type; osc.frequency.setValueAtTime(frequency, ctx.currentTime+startTime);
+                gain.gain.setValueAtTime(volume, ctx.currentTime+startTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+startTime+duration);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(ctx.currentTime+startTime); osc.stop(ctx.currentTime+startTime+duration);
             }
-
-            // Efeitos Sonoros
-            static playPop() { this.playTone('sine', 440, 0.1, 0.3); }
-            static playClear() { this.playTone('triangle', 300, 0.2, 0.2); this.playTone('triangle', 200, 0.2, 0.2, 0.1); }
-            static playCorrect() { this.playTone('sine', 523.25, 0.15, 0.4); this.playTone('sine', 659.25, 0.2, 0.4, 0.15); }
-            static playIncorrect() { this.playTone('sawtooth', 220, 0.2, 0.2); }
+            static playPop() { this.playTone('sine',440,0.1,0.3); }
+            static playClear() { this.playTone('triangle',300,0.2,0.2); this.playTone('triangle',200,0.2,0.2,0.1); }
+            static playCorrect() { this.playTone('sine',523.25,0.15,0.4); this.playTone('sine',659.25,0.2,0.4,0.15); }
+            static playIncorrect() { this.playTone('sawtooth',220,0.2,0.2); }
             static playSuccess() {
-                const now = 0;
-                this.playTone('sine', 523.25, 0.1, 0.3, now);
-                this.playTone('sine', 659.25, 0.1, 0.3, now + 0.1);
-                this.playTone('sine', 783.99, 0.1, 0.3, now + 0.2);
-                this.playTone('sine', 1046.50, 0.2, 0.4, now + 0.3);
+                this.playTone('sine',523.25,0.1,0.3,0); this.playTone('sine',659.25,0.1,0.3,0.1);
+                this.playTone('sine',783.99,0.1,0.3,0.2); this.playTone('sine',1046.50,0.2,0.4,0.3);
             }
-
-            // Sintetizador de Voz (TTS)
             static speak(text) {
                 if ('speechSynthesis' in window) {
                     window.speechSynthesis.cancel();
                     const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = "pt-BR";
-                    
-                    // Tenta selecionar voz do Google
-                    const voices = window.speechSynthesis.getVoices();
-                    const ptVoices = voices.filter(v => v.lang.includes('pt-BR') || v.lang.includes('pt'));
-                    const preferredVoice = ptVoices.find(v => v.name.includes('Google')) || ptVoices[0];
-                    
-                    if (preferredVoice) utterance.voice = preferredVoice;
-
-                    utterance.rate = 1.0; // Velocidade um pouco mais natural
-                    utterance.pitch = 1.2; // Tom levemente mais alegre
+                    utterance.lang="pt-BR";
+                    const voices=window.speechSynthesis.getVoices();
+                    const ptVoices=voices.filter(v=>v.lang.includes('pt-BR')||v.lang.includes('pt'));
+                    const preferredVoice=ptVoices.find(v=>v.name.includes('Google'))||ptVoices[0];
+                    if (preferredVoice) utterance.voice=preferredVoice;
+                    utterance.rate=1.0; utterance.pitch=1.2;
                     window.speechSynthesis.speak(utterance);
                 }
             }
         }
-        
-        // Garante carregamento das vozes
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-        }
-
-        // ==========================================
-        // COMPONENTES PRINCIPAIS (CLASSES)
-        // ==========================================
+        if ('speechSynthesis' in window) { window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices(); }
 
         class App {
-            constructor(root) {
-                this.root = root;
-                this.view = "HOME";
-                this.mainArea = null;
-                this.init();
-            }
-
+            constructor(root) { this.root=root; this.view="HOME"; this.mainArea=null; this.init(); }
             init() {
-                // Remove Loading Screen
-                const loader = document.getElementById('loading-overlay');
-                if (loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => loader.remove(), 500);
-                }
-
-                this.root.innerHTML = '';
+                if (window._loaderFinish) window._loaderFinish();
+                this.root.innerHTML='';
                 this.root.appendChild(this.renderHeader());
-                this.mainArea = el('main', 'w-full flex-grow flex flex-col items-center justify-center p-4 md:p-6');
+                this.mainArea=el('main','w-full flex-grow flex flex-col items-center justify-center p-4 md:p-6');
                 this.root.appendChild(this.mainArea);
                 this.root.appendChild(this.renderFooter());
                 this.renderView();
             }
-
-            setView(viewName) {
-                this.view = viewName;
-                this.renderView();
-            }
-
+            setView(viewName) { this.view=viewName; this.renderView(); }
             renderHeader() {
-                const title = el('h1', 
-                    'font-lilita text-5xl md:text-8xl tracking-wider text-white cursor-pointer select-none transition-transform hover:scale-105 active:scale-100 title-stroked', 
-                    { 
-                        text: 'MUNDO COLORIDO',
-                        onClick: (e) => {
-                            e.currentTarget.classList.add('animate-pop');
-                            setTimeout(() => e.currentTarget.classList.remove('animate-pop'), 300);
-                            this.setView('HOME');
-                        }
-                    }
-                );
-                return el('header', 'w-full p-4 flex justify-center items-center relative', {}, [title]);
+                const title=el('h1','font-lilita text-5xl md:text-8xl tracking-wider text-white cursor-pointer select-none transition-transform hover:scale-105 active:scale-100 title-stroked',{text:'MUNDO COLORIDO',onClick:(e)=>{e.currentTarget.classList.add('animate-pop');setTimeout(()=>e.currentTarget.classList.remove('animate-pop'),300);this.setView('HOME');}});
+                return el('header','w-full p-4 flex justify-center items-center relative',{},[title]);
             }
-
             renderFooter() {
-                return el('footer', 'w-full text-center p-4 text-sm text-gray-700 font-semibold', {}, [
-                    el('p', '', { text: 'Criado com ❤️ para o desenvolvimento infantil.' })
-                ]);
+                return el('footer','w-full text-center p-4 text-sm text-gray-700 font-semibold',{},[el('p','',{text:'Criado com ❤️ para o desenvolvimento infantil.'})]);
             }
-
             renderView() {
-                this.mainArea.innerHTML = '';
-                let component = null;
-
-                if (this.view === 'HOME') {
-                    component = new HomeScreen(this.mainArea, (v) => this.setView(v));
-                } else if (this.view === 'PICTOGRAMS') {
-                    component = new PictogramCommunicator(this.mainArea, (v) => this.setView(v));
-                } else if (this.view === 'EMOTIONS') {
-                    component = new EmotionGame(this.mainArea, (v) => this.setView(v));
-                }
-
-                if (component) component.render();
+                this.mainArea.innerHTML='';
+                if (this.view==='HOME') { new HomeScreen(this.mainArea,(v)=>this.setView(v)); }
+                else if (this.view==='PICTOGRAMS') { new PictogramCommunicator(this.mainArea,(v)=>this.setView(v)); }
+                else if (this.view==='EMOTIONS') { new EmotionGame(this.mainArea,(v)=>this.setView(v)); }
             }
         }
 
         class HomeScreen {
-            constructor(parent, setView) {
-                this.parent = parent;
-                this.setView = setView;
+            constructor(parent,setView) { this.parent=parent; this.setView=setView; this.render(); }
+            renderButton(color,icon,text,viewTarget) {
+                const btn=el('button','btn-3d text-gray-700 shadow-lg flex flex-col justify-center items-center p-6 gap-4 border-4 border-white/80 rounded-2xl w-64 h-56 bg-white/80',{onClick:()=>this.setView(viewTarget)},[el('div','text-7xl drop-shadow-lg btn-3d-icon',{text:icon,style:`color:${color}`}),el('span','font-lilita text-4xl tracking-wide btn-3d-text',{text:text,style:`color:${color}`})]);
+                return el('div','perspective-container',{},[btn]);
             }
-
-            renderButton(color, icon, text, viewTarget) {
-                const btnContent = el('button', 
-                    'btn-3d text-gray-700 shadow-lg flex flex-col justify-center items-center p-6 gap-4 border-4 border-white/80 rounded-2xl w-64 h-56 bg-white/80',
-                    { onClick: () => this.setView(viewTarget) },
-                    [
-                        el('div', 'text-7xl drop-shadow-lg btn-3d-icon', { text: icon, style: `color: ${color}` }),
-                        el('span', 'font-lilita text-4xl tracking-wide btn-3d-text', { text: text, style: `color: ${color}` })
-                    ]
-                );
-                return el('div', 'perspective-container', {}, [btnContent]);
-            }
-
             render() {
-                const container = el('div', 'text-center p-8 animate-fadeIn', {}, [
-                    el('div', 'p-6 rounded-2xl max-w-3xl mx-auto', {}, [
-                        el('h2', 'text-xl md:text-2xl font-bold text-white mb-4 subtitle-stroked', {
-                            text: "Uma aventura interativa para desenvolver a comunicação, reconhecer emoções e expandir a criatividade."
-                        })
-                    ]),
-                    el('div', 'flex flex-col md:flex-row justify-center items-center gap-10 md:gap-12 mt-10', {}, [
-                        this.renderButton("#4DB5F7", "💬", "Comunicar", "PICTOGRAMS"),
-                        this.renderButton("#F7A24D", "🥰", "Emoções", "EMOTIONS")
-                    ])
+                const container=el('div','text-center p-8 animate-fadeIn',{},[
+                    el('div','p-6 rounded-2xl max-w-3xl mx-auto',{},[el('h2','text-xl md:text-2xl font-bold text-white mb-4 subtitle-stroked',{text:"Uma aventura interativa para desenvolver a comunicação, reconhecer emoções e expandir a criatividade."})]),
+                    el('div','flex flex-col md:flex-row justify-center items-center gap-10 md:gap-12 mt-10',{},[this.renderButton("#4DB5F7","💬","Comunicar","PICTOGRAMS"),this.renderButton("#F7A24D","🥰","Emoções","EMOTIONS")])
                 ]);
                 this.parent.appendChild(container);
             }
         }
 
         class PictogramCommunicator {
-            constructor(parent, setView) {
-                this.parent = parent;
-                this.setView = setView;
-                this.sentence = [];
-                this.selectedCategory = "Sentimentos";
-                this.aiResponse = "Olá! Sou a Luz! Vamos brincar e conversar? 😊";
-                this.isProcessing = false;
-                this.showHelp = false;
-                this.blinkInterval = null;
-                this.robotState = "IDLE"; 
-                
-                // ===============================================
-                // NOVO PROMPT DA IA (PERSONALIDADE DIVERTIDA)
-                // ===============================================
-                this.systemPrompt = 
-                "Você é a Luz, uma robô amiga, SUPER animada, carinhosa e divertida para crianças autistas. " +
-                "SUA MISSÃO: Criar uma conexão mágica. Não seja robótica. Seja humana e calorosa! " +
-                "REGRAS DE INTERAÇÃO: " +
-                "1. CELEBRE AS ESCOLHAS: Se a criança disse algo específico (ex: 'Eu quero Bola'), NÃO pergunte 'Bola ou bicicleta?'. Diga: 'Uau! Bola é demais! Vamos chutar bem alto? ⚽ Golaço!'. Valide o desejo dela! " +
-                "2. AJUDE NA DÚVIDA: Apenas se a frase for incompleta (ex: 'Eu quero'), aí sim ofereça opções divertidas da lista: Maçã 🍎, Banana 🍌, Biscoito 🍪, Leite 🥛, Água 💧, Bola ⚽, Bicicleta 🚲, Carrinho 🚗, Boneca 🧸, Blocos 🧱, Casa 🏠, Escola 🏫, Parque ⛲. " +
-                "3. EMOÇÃO: Se a criança disser 'Triste' ou 'Bravo', seja muito acolhedora. 'Oh, tudo bem ficar triste. Um abraço bem apertado da Luz! 🤗'. " +
-                "4. PROIBIDO: Nunca comece com 'Entendi' ou 'Você disse'. Fale direto! Use onomatopeias (Vrumm, Nhac Nhac, Pluft)." +
+            constructor(parent,setView) {
+                this.parent=parent; this.setView=setView; this.sentence=[];
+                this.selectedCategory="Sentimentos"; this.aiResponse="Olá! Sou a Luz! Vamos brincar e conversar? 😊";
+                this.isProcessing=false; this.showHelp=false; this.blinkInterval=null; this.robotState="IDLE";
+                this.systemPrompt=
+                "Você é a Luz, uma robô amiga, SUPER animada, carinhosa e divertida para crianças autistas. "+
+                "SUA MISSÃO: Criar uma conexão mágica. Não seja robótica. Seja humana e calorosa! "+
+                "REGRAS DE INTERAÇÃO: "+
+                "1. CELEBRE AS ESCOLHAS: Se a criança disse algo específico (ex: 'Eu quero Bola'), NÃO pergunte 'Bola ou bicicleta?'. Diga: 'Uau! Bola é demais! Vamos chutar bem alto? ⚽ Golaço!'. Valide o desejo dela! "+
+                "2. AJUDE NA DÚVIDA: Apenas se a frase for incompleta (ex: 'Eu quero'), aí sim ofereça opções divertidas da lista: Maçã 🍎, Banana 🍌, Biscoito 🍪, Leite 🥛, Água 💧, Bola ⚽, Bicicleta 🚲, Carrinho 🚗, Boneca 🧸, Blocos 🧱, Casa 🏠, Escola 🏫, Parque ⛲. "+
+                "3. EMOÇÃO: Se a criança disser 'Triste' ou 'Bravo', seja muito acolhedora. 'Oh, tudo bem ficar triste. Um abraço bem apertado da Luz! 🤗'. "+
+                "4. PROIBIDO: Nunca comece com 'Entendi' ou 'Você disse'. Fale direto! Use onomatopeias (Vrumm, Nhac Nhac, Pluft)."+
                 "5. EMOJIS: Use emojis para ilustrar, mas não em excesso.";
-            }
-
-            addPictogram(pic) {
-                if (this.sentence.length < 5) {
-                    this.sentence.push(pic);
-                    SoundUtils.playPop();
-                    this.render();
-                } else {
-                    SoundUtils.playIncorrect();
-                }
-            }
-
-            clear() {
-                this.sentence = [];
-                SoundUtils.playClear();
                 this.render();
             }
-
+            addPictogram(pic) { if(this.sentence.length<5){this.sentence.push(pic);SoundUtils.playPop();this.render();}else{SoundUtils.playIncorrect();} }
+            clear() { this.sentence=[];SoundUtils.playClear();this.render(); }
             async speak() {
-                if (this.sentence.length === 0 || this.isProcessing) return;
-                
-                const textToSpeak = this.sentence.map(p => p.label).join(" ");
+                if(this.sentence.length===0||this.isProcessing) return;
+                const textToSpeak=this.sentence.map(p=>p.label).join(" ");
                 SoundUtils.speak(textToSpeak);
-                
-                this.isProcessing = true;
-                this.robotState = "THINKING";
-                this.render(); 
-
-                const emojiRegex = /[\p{Extended_Pictographic}\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
-
+                this.isProcessing=true; this.robotState="THINKING"; this.render();
+                const emojiRegex=/[\p{Extended_Pictographic}\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
                 try {
-                    const response = await this.callGemini(textToSpeak);
-                    this.aiResponse = response;
-                    SoundUtils.speak(response.replace(emojiRegex, '').trim());
-                } catch (error) {
-                    console.error("Erro na comunicação:", error);
-                    const fallback = this.getOfflineResponse(textToSpeak);
-                    this.aiResponse = fallback;
-                    SoundUtils.speak(fallback.replace(emojiRegex, '').trim());
+                    const response=await this.callGemini(textToSpeak);
+                    this.aiResponse=response; SoundUtils.speak(response.replace(emojiRegex,'').trim());
+                } catch(error) {
+                    const fallback=this.getOfflineResponse(textToSpeak);
+                    this.aiResponse=fallback; SoundUtils.speak(fallback.replace(emojiRegex,'').trim());
                 }
-
-                this.sentence = [];
-                this.isProcessing = false;
-                this.robotState = "IDLE";
-                this.render();
+                this.sentence=[];this.isProcessing=false;this.robotState="IDLE";this.render();
             }
-
             getOfflineResponse(text) {
-                const lowerText = text.toLowerCase();
-                if (lowerText.includes("bola") || lowerText.includes("brincar")) return "Eba! Brincar é muito legal! Vamos nos divertir! ⚽🎉";
-                if (lowerText.includes("fome") || lowerText.includes("comer") || lowerText.includes("maca") || lowerText.includes("biscoito")) return "Hummm! Que delícia! Nhac nhac! 😋🍎";
-                if (lowerText.includes("beber") || lowerText.includes("agua")) return "Glub glub! Água fresquinha é muito bom! 💧";
-                if (lowerText.includes("escola")) return "Escola é lugar de aprender e brincar com os amigos! 🏫";
-                if (lowerText.includes("feliz")) return "Oba! Ver você feliz me deixa feliz também! Sorrisão! 😄";
-                if (lowerText.includes("triste")) return "Ah, não fique triste. Um abraço da Luz! 🤗";
+                const t=text.toLowerCase();
+                if(t.includes("bola")||t.includes("brincar")) return "Eba! Brincar é muito legal! Vamos nos divertir! ⚽🎉";
+                if(t.includes("fome")||t.includes("comer")||t.includes("maca")||t.includes("biscoito")) return "Hummm! Que delícia! Nhac nhac! 😋🍎";
+                if(t.includes("beber")||t.includes("agua")) return "Glub glub! Água fresquinha é muito bom! 💧";
+                if(t.includes("escola")) return "Escola é lugar de aprender e brincar com os amigos! 🏫";
+                if(t.includes("feliz")) return "Oba! Ver você feliz me deixa feliz também! Sorrisão! 😄";
+                if(t.includes("triste")) return "Ah, não fique triste. Um abraço da Luz! 🤗";
                 return `Que legal! Você disse: ${text}. Gostei muito! 👍`;
             }
-
             async callGemini(userText) {
-                if (!API_KEY) throw new Error("No API Key");
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
-                const payload = {
-                    contents: [{ parts: [{ text: `A criança montou os pictogramas: '${userText}'.` }] }],
-                    systemInstruction: { parts: [{ text: this.systemPrompt }] },
-                    generationConfig: { temperature: 0.6 }
-                };
-                const res = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-                if (!res.ok) throw new Error("API Error: " + res.status);
-                const data = await res.json();
-                if (data.candidates && data.candidates[0].content.parts[0].text) return data.candidates[0].content.parts[0].text;
+                if(!API_KEY) throw new Error("No API Key");
+                const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+                const payload={contents:[{parts:[{text:`A criança montou os pictogramas: '${userText}'.`}]}],systemInstruction:{parts:[{text:this.systemPrompt}]},generationConfig:{temperature:0.6}};
+                const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+                if(!res.ok) throw new Error("API Error: "+res.status);
+                const data=await res.json();
+                if(data.candidates&&data.candidates[0].content.parts[0].text) return data.candidates[0].content.parts[0].text;
                 throw new Error("Formato de resposta inválido");
             }
-
-            toggleHelp() {
-                this.showHelp = !this.showHelp;
-                SoundUtils.playPop();
-                this.render();
-            }
-
+            toggleHelp() { this.showHelp=!this.showHelp;SoundUtils.playPop();this.render(); }
             startAnimations(element) {
-                if (this.blinkInterval) clearInterval(this.blinkInterval);
-                this.blinkInterval = setInterval(() => {
-                    if (this.isProcessing) return;
-                    if (Math.random() > 0.8) {
-                        element.innerText = "😑"; 
-                        setTimeout(() => element.innerText = "🤖", 200);
-                    }
-                }, 2000);
+                if(this.blinkInterval) clearInterval(this.blinkInterval);
+                this.blinkInterval=setInterval(()=>{ if(this.isProcessing) return; if(Math.random()>0.8){element.innerText="😑";setTimeout(()=>element.innerText="🤖",200);} },2000);
             }
-
             renderHelpModal() {
-                if (!this.showHelp) return null;
-                return el('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn', {}, [
-                    el('div', 'bg-white rounded-3xl p-8 max-w-md m-4 shadow-2xl relative', {}, [
-                        el('button', 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold', { text: '✕', onClick: () => this.toggleHelp() }),
-                        el('h3', 'font-lilita text-2xl text-blue-500 mb-4', { text: 'Como funciona o Comunicador?' }),
-                        el('div', 'space-y-4 text-gray-600 text-left', {}, [
-                            el('p', '', { text: "🧩 Toque nas figuras para montar frases." }),
-                            el('p', '', { text: "🗣️ Toque em 'Falar' para ouvir e interagir com a Robô Luz." }),
-                            el('p', '', { text: "🤖 A Luz vai responder de forma divertida e amiga!" })
+                if(!this.showHelp) return null;
+                return el('div','fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn',{},[
+                    el('div','bg-white rounded-3xl p-8 max-w-md m-4 shadow-2xl relative',{},[
+                        el('button','absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold',{text:'✕',onClick:()=>this.toggleHelp()}),
+                        el('h3','font-lilita text-2xl text-blue-500 mb-4',{text:'Como funciona o Comunicador?'}),
+                        el('div','space-y-4 text-gray-600 text-left',{},[
+                            el('p','',{text:"🧩 Toque nas figuras para montar frases."}),
+                            el('p','',{text:"🗣️ Toque em 'Falar' para ouvir e interagir com a Robô Luz."}),
+                            el('p','',{text:"🤖 A Luz vai responder de forma divertida e amiga!"})
                         ]),
-                        el('button', 'mt-6 w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-600 transition-colors', { text: 'Entendi!', onClick: () => this.toggleHelp() })
+                        el('button','mt-6 w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-600 transition-colors',{text:'Entendi!',onClick:()=>this.toggleHelp()})
                     ])
                 ]);
             }
-
             render() {
-                this.parent.innerHTML = '';
-                if (this.showHelp) this.parent.appendChild(this.renderHelpModal());
-
-                const container = el('div', 'w-full max-w-6xl bg-white/90 rounded-3xl shadow-xl p-4 md:p-6 flex flex-col gap-6 relative min-h-[80vh]');
-
-                // Header
-                const header = el('div', 'flex justify-between items-center w-full pb-4 border-b-2 border-gray-100', {}, [
-                    el('div', 'relative w-32 h-10', {}, [
-                        el('button', 'absolute top-0 left-0 px-4 py-2 bg-orange-400 border-b-4 border-orange-600 text-white font-bold rounded-xl shadow active:border-b-2 active:mt-1 flex items-center gap-2 text-sm', 
-                           { onClick: () => this.setView('HOME') },
-                           [el('span', '', { text: '⬅️' }), el('span', 'hidden md:block', { text: 'Voltar' })]
-                        )
-                    ]),
-                    el('h2', 'font-lilita text-3xl text-blue-500 text-center', { text: 'Comunicar' }),
-                    el('button', 'w-10 h-10 rounded-full bg-blue-100 text-blue-500 font-bold text-xl hover:bg-blue-200 transition-colors flex items-center justify-center shadow-sm', 
-                       { text: '?', onClick: () => this.toggleHelp() })
+                this.parent.innerHTML='';
+                if(this.showHelp) this.parent.appendChild(this.renderHelpModal());
+                const container=el('div','w-full max-w-6xl bg-white/90 rounded-3xl shadow-xl p-4 md:p-6 flex flex-col gap-6 relative min-h-[80vh]');
+                const header=el('div','flex justify-between items-center w-full pb-4 border-b-2 border-gray-100',{},[
+                    el('div','relative w-32 h-10',{},[el('button','absolute top-0 left-0 px-4 py-2 bg-orange-400 border-b-4 border-orange-600 text-white font-bold rounded-xl shadow active:border-b-2 active:mt-1 flex items-center gap-2 text-sm',{onClick:()=>this.setView('HOME')},[el('span','',{text:'⬅️'}),el('span','hidden md:block',{text:'Voltar'})])]),
+                    el('h2','font-lilita text-3xl text-blue-500 text-center',{text:'Comunicar'}),
+                    el('button','w-10 h-10 rounded-full bg-blue-100 text-blue-500 font-bold text-xl hover:bg-blue-200 transition-colors flex items-center justify-center shadow-sm',{text:'?',onClick:()=>this.toggleHelp()})
                 ]);
-
-                // Robot Area
-                let robotEmoji = "🤖";
-                if (this.robotState === "THINKING") robotEmoji = "⏳";
-                const robotAnim = this.robotState === "THINKING" ? "animate-bounce" : "animate-float";
-                const robotFace = el('div', `text-6xl ${robotAnim} transition-all duration-300`, { text: robotEmoji });
-                if (this.robotState === "IDLE") this.startAnimations(robotFace);
-
-                const robotArea = el('div', 'flex flex-col md:flex-row items-center gap-4 bg-blue-50 rounded-2xl p-4 border-2 border-blue-100', {}, [
-                    robotFace,
-                    el('div', 'flex-1 bg-white p-4 rounded-xl rounded-tl-none shadow-sm relative min-h-[80px] flex items-center', {}, [
-                        el('p', 'text-gray-700 font-medium text-lg', { text: this.aiResponse }),
-                        el('div', 'absolute -left-2 top-4 w-4 h-4 bg-white transform rotate-45')
-                    ])
-                ]);
-
-                // Sentence Area
-                const sentenceCards = this.sentence.map(p => 
-                    el('div', `flex flex-col items-center justify-center w-20 h-24 ${p.color} rounded-xl shadow-sm animate-pop-in bg-white border-b-4`, {}, [
-                        el('span', 'text-3xl mb-1', { text: p.emoji }),
-                        el('span', 'text-xs font-bold text-gray-600 px-1 text-center leading-tight', { text: p.label })
-                    ])
-                );
-                if (this.sentence.length === 0) sentenceCards.push(el('span', 'text-gray-400 italic ml-4', { text: 'Toque nas figuras para montar uma frase...' }));
-
-                const sentenceStrip = el('div', 'bg-gray-100 rounded-2xl p-4 min-h-[100px] flex items-center justify-between gap-4 border-2 border-gray-200 shadow-inner', {}, [
-                    el('div', 'flex flex-wrap gap-2 flex-1', {}, sentenceCards),
-                    el('div', 'flex gap-2', {}, [
-                        el('button', 'p-3 bg-red-100 text-red-500 rounded-xl hover:bg-red-200 active:scale-95 transition-all border-b-4 border-red-200 active:border-b-0 active:translate-y-1', { text: '❌', onClick: () => this.clear() }),
-                        el('button', `p-3 bg-green-500 text-white rounded-xl hover:bg-green-600 active:scale-95 transition-all border-b-4 border-green-700 active:border-b-0 active:translate-y-1 font-bold flex items-center gap-2 ${this.isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`, 
-                            { onClick: () => this.speak() }, [el('span', '', { text: '🔊' }), el('span', 'hidden md:inline', { text: 'Falar' })])
-                    ])
-                ]);
-
-                // Grid
-                const tabs = el('div', 'flex flex-wrap gap-2 justify-center mb-2', {}, 
-                    Object.keys(PICTOGRAMS).map(cat => el('button', `px-4 py-2 rounded-full font-bold text-sm transition-all ${cat === this.selectedCategory ? 'bg-blue-500 text-white shadow-md transform scale-105' : 'bg-white text-gray-500 hover:bg-gray-50'}`, { text: cat, onClick: () => { this.selectedCategory = cat; SoundUtils.playPop(); this.render(); } }))
-                );
-
-                const grid = el('div', 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 overflow-y-auto max-h-[400px] p-2', {},
-                    PICTOGRAMS[this.selectedCategory].map(item => el('button', `flex flex-col items-center justify-center p-3 aspect-square bg-white border-2 ${item.color.replace('bg-', 'hover:bg-').replace('border-', 'border-')} rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all active:scale-95`, { onClick: () => this.addPictogram(item) }, [el('span', 'text-4xl md:text-5xl mb-2', { text: item.emoji }), el('span', 'font-bold text-gray-700 text-sm md:text-base', { text: item.label })]))
-                );
-
-                container.append(header, robotArea, sentenceStrip, tabs, grid);
+                let robotEmoji="🤖"; if(this.robotState==="THINKING") robotEmoji="⏳";
+                const robotAnim=this.robotState==="THINKING"?"animate-bounce":"animate-float";
+                const robotFace=el('div',`text-6xl ${robotAnim} transition-all duration-300`,{text:robotEmoji});
+                if(this.robotState==="IDLE") this.startAnimations(robotFace);
+                const robotArea=el('div','flex flex-col md:flex-row items-center gap-4 bg-blue-50 rounded-2xl p-4 border-2 border-blue-100',{},[robotFace,el('div','flex-1 bg-white p-4 rounded-xl rounded-tl-none shadow-sm relative min-h-[80px] flex items-center',{},[el('p','text-gray-700 font-medium text-lg',{text:this.aiResponse}),el('div','absolute -left-2 top-4 w-4 h-4 bg-white transform rotate-45')])]);
+                const sentenceCards=this.sentence.map(p=>el('div',`flex flex-col items-center justify-center w-20 h-24 ${p.color} rounded-xl shadow-sm animate-pop-in bg-white border-b-4`,{},[el('span','text-3xl mb-1',{text:p.emoji}),el('span','text-xs font-bold text-gray-600 px-1 text-center leading-tight',{text:p.label})]));
+                if(this.sentence.length===0) sentenceCards.push(el('span','text-gray-400 italic ml-4',{text:'Toque nas figuras para montar uma frase...'}));
+                const sentenceStrip=el('div','bg-gray-100 rounded-2xl p-4 min-h-[100px] flex items-center justify-between gap-4 border-2 border-gray-200 shadow-inner',{},[el('div','flex flex-wrap gap-2 flex-1',{},sentenceCards),el('div','flex gap-2',{},[el('button','p-3 bg-red-100 text-red-500 rounded-xl hover:bg-red-200 active:scale-95 transition-all border-b-4 border-red-200 active:border-b-0 active:translate-y-1',{text:'❌',onClick:()=>this.clear()}),el('button',`p-3 bg-green-500 text-white rounded-xl hover:bg-green-600 active:scale-95 transition-all border-b-4 border-green-700 active:border-b-0 active:translate-y-1 font-bold flex items-center gap-2 ${this.isProcessing?'opacity-50 cursor-not-allowed':''}`,{onClick:()=>this.speak()},[el('span','',{text:'🔊'}),el('span','hidden md:inline',{text:'Falar'})])])]);
+                const tabs=el('div','flex flex-wrap gap-2 justify-center mb-2',{},Object.keys(PICTOGRAMS).map(cat=>el('button',`px-4 py-2 rounded-full font-bold text-sm transition-all ${cat===this.selectedCategory?'bg-blue-500 text-white shadow-md transform scale-105':'bg-white text-gray-500 hover:bg-gray-50'}`,{text:cat,onClick:()=>{this.selectedCategory=cat;SoundUtils.playPop();this.render();}})));
+                const grid=el('div','grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 overflow-y-auto max-h-[400px] p-2',{},PICTOGRAMS[this.selectedCategory].map(item=>el('button',`flex flex-col items-center justify-center p-3 aspect-square bg-white border-2 ${item.color} rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all active:scale-95`,{onClick:()=>this.addPictogram(item)},[el('span','text-4xl md:text-5xl mb-2',{text:item.emoji}),el('span','font-bold text-gray-700 text-sm md:text-base',{text:item.label})])));
+                container.append(header,robotArea,sentenceStrip,tabs,grid);
                 this.parent.appendChild(container);
             }
         }
 
         class EmotionGame {
-            constructor(parent, setView) {
-                this.parent = parent;
-                this.setView = setView;
-                this.score = 0;
-                this.currentRound = 0;
-                this.maxRounds = 5;
-                this.gameState = "PLAYING";
-                this.mode = "MENU"; // MENU, CLASSIC, STORY
-                this.showHelp = false;
-                
-                const savedBest = localStorage.getItem('emotionGameBestScore');
-                this.bestScore = savedBest ? parseInt(savedBest) : 0;
-            }
-
-            setMode(mode) {
-                this.mode = mode;
-                this.score = 0;
-                this.currentRound = 0;
-                this.setupRound();
+            constructor(parent,setView) {
+                this.parent=parent; this.setView=setView; this.score=0; this.currentRound=0;
+                this.maxRounds=5; this.gameState="PLAYING"; this.mode="MENU"; this.showHelp=false;
+                const savedBest=localStorage.getItem('emotionGameBestScore');
+                this.bestScore=savedBest?parseInt(savedBest):0;
                 this.render();
             }
-
+            setMode(mode) { this.mode=mode;this.score=0;this.currentRound=0;this.setupRound();this.render(); }
             setupRound() {
-                if (this.currentRound >= this.maxRounds) {
-                    this.gameState = "FINISHED";
-                    SoundUtils.playSuccess();
-                    if (this.mode === 'CLASSIC' && this.score > this.bestScore) {
-                        this.bestScore = this.score;
-                        localStorage.setItem('emotionGameBestScore', this.bestScore);
-                    }
-                    confettiSystem.createParticles(200);
-                    return;
+                if(this.currentRound>=this.maxRounds){
+                    this.gameState="FINISHED";SoundUtils.playSuccess();
+                    if(this.mode==='CLASSIC'&&this.score>this.bestScore){this.bestScore=this.score;localStorage.setItem('emotionGameBestScore',this.bestScore);}
+                    confettiSystem.createParticles(200);return;
                 }
-
-                if (this.mode === 'CLASSIC') {
-                    const target = EMOTION_LEVELS[Math.floor(Math.random() * EMOTION_LEVELS.length)];
-                    this.currentEmotion = target;
-                    let opts = [{ label: target.target, emoji: target.emoji, isCorrect: true }];
-                    const distractors = [...target.distractors].sort(() => 0.5 - Math.random()).slice(0, 2);
-                    distractors.forEach(emoji => opts.push({ label: "???", emoji: emoji, isCorrect: false }));
-                    this.options = opts.sort(() => 0.5 - Math.random());
-                } else if (this.mode === 'STORY') {
-                    const target = EMOTION_STORIES[Math.floor(Math.random() * EMOTION_STORIES.length)];
-                    this.currentStory = target;
-                    let opts = [{ label: target.emotion, emoji: target.emoji, isCorrect: true }];
-                    const distractors = [...target.distractors].sort(() => 0.5 - Math.random()).slice(0, 2);
-                    distractors.forEach(emoji => opts.push({ label: "???", emoji: emoji, isCorrect: false }));
-                    this.options = opts.sort(() => 0.5 - Math.random());
-                    
-                    // Fala a história automaticamente após 500ms
-                    setTimeout(() => SoundUtils.speak(this.currentStory.text), 500);
+                if(this.mode==='CLASSIC'){
+                    const target=EMOTION_LEVELS[Math.floor(Math.random()*EMOTION_LEVELS.length)];
+                    this.currentEmotion=target;
+                    let opts=[{label:target.target,emoji:target.emoji,isCorrect:true}];
+                    const distractors=[...target.distractors].sort(()=>0.5-Math.random()).slice(0,2);
+                    distractors.forEach(emoji=>opts.push({label:"???",emoji:emoji,isCorrect:false}));
+                    this.options=opts.sort(()=>0.5-Math.random());
+                } else if(this.mode==='STORY'){
+                    const target=EMOTION_STORIES[Math.floor(Math.random()*EMOTION_STORIES.length)];
+                    this.currentStory=target;
+                    let opts=[{label:target.emotion,emoji:target.emoji,isCorrect:true}];
+                    const distractors=[...target.distractors].sort(()=>0.5-Math.random()).slice(0,2);
+                    distractors.forEach(emoji=>opts.push({label:"???",emoji:emoji,isCorrect:false}));
+                    this.options=opts.sort(()=>0.5-Math.random());
+                    setTimeout(()=>SoundUtils.speak(this.currentStory.text),500);
                 }
-
-                this.gameState = "PLAYING";
+                this.gameState="PLAYING";
             }
-
             handleAnswer(option) {
-                if (this.gameState !== "PLAYING") return;
-                this.gameState = "FEEDBACK";
-                if (option.isCorrect) {
-                    this.score++;
-                    this.feedback = { message: "Muito bem! 🎉", type: "success" };
-                    SoundUtils.playCorrect();
-                } else {
-                    this.feedback = { message: "Ops! Tente de novo.", type: "error" };
-                    SoundUtils.playIncorrect();
-                }
+                if(this.gameState!=="PLAYING") return;
+                this.gameState="FEEDBACK";
+                if(option.isCorrect){this.score++;this.feedback={message:"Muito bem! 🎉",type:"success"};SoundUtils.playCorrect();}
+                else{this.feedback={message:"Ops! Tente de novo.",type:"error"};SoundUtils.playIncorrect();}
                 this.render();
-                setTimeout(() => { this.currentRound++; this.setupRound(); this.render(); }, 2500);
+                setTimeout(()=>{this.currentRound++;this.setupRound();this.render();},2500);
             }
-
-            restart() {
-                this.score = 0; this.currentRound = 0; this.setupRound(); this.render();
-            }
-
-            toggleHelp() {
-                this.showHelp = !this.showHelp;
-                SoundUtils.playPop();
-                this.render();
-            }
-
+            restart() { this.score=0;this.currentRound=0;this.setupRound();this.render(); }
+            toggleHelp() { this.showHelp=!this.showHelp;SoundUtils.playPop();this.render(); }
             renderHelpModal() {
-                if (!this.showHelp) return null;
-                return el('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn', {}, [
-                    el('div', 'bg-white rounded-3xl p-8 max-w-md m-4 shadow-2xl relative', {}, [
-                        el('button', 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold', { text: '✕', onClick: () => this.toggleHelp() }),
-                        el('h3', 'font-lilita text-2xl text-orange-500 mb-4', { text: 'Jogos das Emoções' }),
-                        el('div', 'space-y-4 text-gray-600 text-left', {}, [
-                            el('h4', 'font-bold text-orange-400', { text: "1. Identificar 🤔" }),
-                            el('p', 'text-sm mb-2', { text: "Aprenda a reconhecer as expressões faciais (Feliz, Triste, Bravo)." }),
-                            el('h4', 'font-bold text-orange-400', { text: "2. Histórias 📖" }),
-                            el('p', 'text-sm', { text: "Ouça uma pequena história e descubra como o personagem se sente!" }),
-                            el('p', 'mt-4 italic text-xs', { text: "Dica: Toque no botão de som para ouvir a história novamente." })
+                if(!this.showHelp) return null;
+                return el('div','fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn',{},[
+                    el('div','bg-white rounded-3xl p-8 max-w-md m-4 shadow-2xl relative',{},[
+                        el('button','absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold',{text:'✕',onClick:()=>this.toggleHelp()}),
+                        el('h3','font-lilita text-2xl text-orange-500 mb-4',{text:'Jogos das Emoções'}),
+                        el('div','space-y-4 text-gray-600 text-left',{},[
+                            el('h4','font-bold text-orange-400',{text:"1. Identificar 🤔"}),
+                            el('p','text-sm mb-2',{text:"Aprenda a reconhecer as expressões faciais (Feliz, Triste, Bravo)."}),
+                            el('h4','font-bold text-orange-400',{text:"2. Histórias 📖"}),
+                            el('p','text-sm',{text:"Ouça uma pequena história e descubra como o personagem se sente!"}),
+                            el('p','mt-4 italic text-xs',{text:"Dica: Toque no botão de som para ouvir a história novamente."})
                         ]),
-                        el('button', 'mt-6 w-full bg-orange-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-orange-600 transition-colors', { text: 'Entendi, vamos jogar!', onClick: () => this.toggleHelp() })
+                        el('button','mt-6 w-full bg-orange-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-orange-600 transition-colors',{text:'Entendi, vamos jogar!',onClick:()=>this.toggleHelp()})
                     ])
                 ]);
             }
-
             render() {
-                this.parent.innerHTML = '';
-                if (this.showHelp) this.parent.appendChild(this.renderHelpModal());
-
-                const container = el('div', 'w-full max-w-4xl bg-white/90 rounded-3xl shadow-xl p-6 flex flex-col gap-6 text-center min-h-[60vh] justify-center relative overflow-hidden animate-fadeIn');
-
-                // Header Buttons
-                container.appendChild(el('button', 'absolute top-4 left-4 px-4 py-2 bg-orange-400 border-b-4 border-orange-600 text-white font-bold rounded-xl shadow active:border-b-2 active:mt-1 flex items-center gap-2 text-sm z-20', { onClick: () => { if(this.mode !== 'MENU') { this.mode = 'MENU'; this.render(); } else { this.setView('HOME'); } } }, [el('span', '', { text: '⬅️' }), el('span', 'hidden md:block', { text: this.mode === 'MENU' ? 'Voltar' : 'Menu' })]));
-                
-                container.appendChild(el('button', 'absolute top-4 right-4 w-10 h-10 rounded-full bg-orange-100 text-orange-500 font-bold text-xl hover:bg-orange-200 transition-colors flex items-center justify-center shadow-sm z-20', { text: '?', onClick: () => this.toggleHelp() }));
-
-                if (this.mode === 'MENU') {
-                    // SELEÇÃO DE MODO
-                    container.appendChild(el('h2', 'font-lilita text-4xl text-orange-500 mb-8', { text: 'Escolha um Jogo' }));
-                    const menuGrid = el('div', 'flex flex-col md:flex-row justify-center gap-8 items-center', {}, [
-                        el('button', 'btn-3d w-64 h-56 bg-white border-4 border-orange-200 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-orange-400 transition-all', 
-                           { onClick: () => this.setMode('CLASSIC') }, 
-                           [el('span', 'text-6xl btn-3d-icon', {text: '🤔'}), el('span', 'font-lilita text-2xl text-orange-500 btn-3d-text', {text: 'Identificar'})]
-                        ),
-                        el('button', 'btn-3d w-64 h-56 bg-white border-4 border-purple-200 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-purple-400 transition-all', 
-                           { onClick: () => this.setMode('STORY') }, 
-                           [el('span', 'text-6xl btn-3d-icon', {text: '📖'}), el('span', 'font-lilita text-2xl text-purple-500 btn-3d-text', {text: 'Histórias'})]
-                        )
+                this.parent.innerHTML='';
+                if(this.showHelp) this.parent.appendChild(this.renderHelpModal());
+                const container=el('div','w-full max-w-4xl bg-white/90 rounded-3xl shadow-xl p-6 flex flex-col gap-6 text-center min-h-[60vh] justify-center relative overflow-hidden animate-fadeIn');
+                container.appendChild(el('button','absolute top-4 left-4 px-4 py-2 bg-orange-400 border-b-4 border-orange-600 text-white font-bold rounded-xl shadow active:border-b-2 active:mt-1 flex items-center gap-2 text-sm z-20',{onClick:()=>{if(this.mode!=='MENU'){this.mode='MENU';this.render();}else{this.setView('HOME');}}},[el('span','',{text:'⬅️'}),el('span','hidden md:block',{text:this.mode==='MENU'?'Voltar':'Menu'})]));
+                container.appendChild(el('button','absolute top-4 right-4 w-10 h-10 rounded-full bg-orange-100 text-orange-500 font-bold text-xl hover:bg-orange-200 transition-colors flex items-center justify-center shadow-sm z-20',{text:'?',onClick:()=>this.toggleHelp()}));
+                if(this.mode==='MENU'){
+                    container.appendChild(el('h2','font-lilita text-4xl text-orange-500 mb-8',{text:'Escolha um Jogo'}));
+                    const menuGrid=el('div','flex flex-col md:flex-row justify-center gap-8 items-center',{},[
+                        el('button','btn-3d w-64 h-56 bg-white border-4 border-orange-200 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-orange-400 transition-all',{onClick:()=>this.setMode('CLASSIC')},[el('span','text-6xl btn-3d-icon',{text:'🤔'}),el('span','font-lilita text-2xl text-orange-500 btn-3d-text',{text:'Identificar'})]),
+                        el('button','btn-3d w-64 h-56 bg-white border-4 border-purple-200 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-purple-400 transition-all',{onClick:()=>this.setMode('STORY')},[el('span','text-6xl btn-3d-icon',{text:'📖'}),el('span','font-lilita text-2xl text-purple-500 btn-3d-text',{text:'Histórias'})])
                     ]);
-                    container.appendChild(el('div', 'perspective-container', {}, [menuGrid]));
-
-                } else if (this.gameState === "FINISHED") {
-                    // TELA DE VITÓRIA
-                    const result = el('div', 'flex flex-col items-center gap-6 animate-tada', {}, [
-                        el('span', 'text-8xl', { text: '🏆' }),
-                        el('h2', 'font-lilita text-4xl text-orange-500', { text: 'Parabéns!' }),
-                        el('p', 'text-2xl text-gray-600', { text: `Você acertou ${this.score} de ${this.maxRounds}!` }),
-                        el('button', 'mt-4 bg-green-500 text-white text-xl font-bold py-4 px-8 rounded-2xl shadow-lg hover:bg-green-600 transition-transform hover:scale-105', { text: 'Jogar Novamente', onClick: () => this.restart() })
+                    container.appendChild(el('div','perspective-container',{},[menuGrid]));
+                } else if(this.gameState==="FINISHED"){
+                    const result=el('div','flex flex-col items-center gap-6 animate-tada',{},[
+                        el('span','text-8xl',{text:'🏆'}),
+                        el('h2','font-lilita text-4xl text-orange-500',{text:'Parabéns!'}),
+                        el('p','text-2xl text-gray-600',{text:`Você acertou ${this.score} de ${this.maxRounds}!`}),
+                        el('button','mt-4 bg-green-500 text-white text-xl font-bold py-4 px-8 rounded-2xl shadow-lg hover:bg-green-600 transition-transform hover:scale-105',{text:'Jogar Novamente',onClick:()=>this.restart()})
                     ]);
                     container.appendChild(result);
-
                 } else {
-                    // JOGO EM ANDAMENTO
-                    container.appendChild(el('div', 'w-full bg-gray-200 rounded-full h-4 mb-4 overflow-hidden', {}, [el('div', 'bg-green-500 h-4 transition-all duration-500', { style: `width: ${(this.currentRound / this.maxRounds) * 100}%` })]));
-                    
-                    if (this.mode === 'CLASSIC') {
-                        container.appendChild(el('h2', 'font-lilita text-3xl md:text-4xl text-gray-700 mb-4', { text: `Quem está ${this.currentEmotion.target}?` }));
-                    } else if (this.mode === 'STORY') {
-                        container.appendChild(el('div', 'bg-purple-50 p-6 rounded-2xl mb-4 border-2 border-purple-100 flex flex-col items-center gap-4', {}, [
-                            el('p', 'text-xl md:text-2xl font-medium text-gray-700', { text: this.currentStory.text }),
-                            el('button', 'flex items-center gap-2 bg-purple-100 text-purple-600 px-4 py-2 rounded-full font-bold hover:bg-purple-200', 
-                               { onClick: () => SoundUtils.speak(this.currentStory.text) },
-                               [el('span', '', {text: '🔊'}), el('span', '', {text: 'Ouvir de novo'})]
-                            )
-                        ]));
-                        container.appendChild(el('h2', 'font-lilita text-2xl text-gray-500', { text: 'Como ele se sente?' }));
+                    container.appendChild(el('div','w-full bg-gray-200 rounded-full h-4 mb-4 overflow-hidden',{},[el('div','bg-green-500 h-4 transition-all duration-500',{style:`width:${(this.currentRound/this.maxRounds)*100}%`})]));
+                    if(this.mode==='CLASSIC'){
+                        container.appendChild(el('h2','font-lilita text-3xl md:text-4xl text-gray-700 mb-4',{text:`Quem está ${this.currentEmotion.target}?`}));
+                    } else if(this.mode==='STORY'){
+                        container.appendChild(el('div','bg-purple-50 p-6 rounded-2xl mb-4 border-2 border-purple-100 flex flex-col items-center gap-4',{},[el('p','text-xl md:text-2xl font-medium text-gray-700',{text:this.currentStory.text}),el('button','flex items-center gap-2 bg-purple-100 text-purple-600 px-4 py-2 rounded-full font-bold hover:bg-purple-200',{onClick:()=>SoundUtils.speak(this.currentStory.text)},[el('span','',{text:'🔊'}),el('span','',{text:'Ouvir de novo'})])]));
+                        container.appendChild(el('h2','font-lilita text-2xl text-gray-500',{text:'Como ele se sente?'}));
                     }
-
-                    const optionsDiv = el('div', 'flex flex-wrap justify-center gap-6 md:gap-10 mt-4', {}, 
-                        this.options.map(opt => {
-                            let extraClass = "";
-                            if (this.gameState === "FEEDBACK") {
-                                if (opt.isCorrect && this.feedback.type === "success") extraClass = "border-green-400 bg-green-50";
-                                else if (!opt.isCorrect && this.feedback.type === "error") extraClass = "animate-shake border-red-400";
-                            }
-                            return el('button', `text-7xl md:text-8xl p-6 bg-white border-4 border-orange-100 rounded-3xl shadow-md hover:scale-110 transition-transform duration-200 active:scale-95 ${extraClass}`, { text: opt.emoji, onClick: () => this.handleAnswer(opt) });
-                        })
-                    );
+                    const optionsDiv=el('div','flex flex-wrap justify-center gap-6 md:gap-10 mt-4',{},this.options.map(opt=>{
+                        let extraClass="";
+                        if(this.gameState==="FEEDBACK"){if(opt.isCorrect&&this.feedback.type==="success")extraClass="border-green-400 bg-green-50";else if(!opt.isCorrect&&this.feedback.type==="error")extraClass="animate-shake border-red-400";}
+                        return el('button',`text-7xl md:text-8xl p-6 bg-white border-4 border-orange-100 rounded-3xl shadow-md hover:scale-110 transition-transform duration-200 active:scale-95 ${extraClass}`,{text:opt.emoji,onClick:()=>this.handleAnswer(opt)});
+                    }));
                     container.appendChild(optionsDiv);
-                    if (this.gameState === "FEEDBACK") {
-                        container.appendChild(el('div', `absolute inset-0 flex items-center justify-center bg-white/80 z-10 font-lilita text-4xl ${this.feedback.type === "success" ? "text-green-600" : "text-orange-500"} animate-pop-in`, { text: this.feedback.message }));
-                    }
+                    if(this.gameState==="FEEDBACK"){container.appendChild(el('div',`absolute inset-0 flex items-center justify-center bg-white/80 z-10 font-lilita text-4xl ${this.feedback.type==="success"?"text-green-600":"text-orange-500"} animate-pop-in`,{text:this.feedback.message}));}
                 }
                 this.parent.appendChild(container);
             }
         }
 
-        // Inicialização
         document.addEventListener('DOMContentLoaded', () => new App(document.getElementById('app-container')));
     </script>
 </body>
